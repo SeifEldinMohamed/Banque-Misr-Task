@@ -6,11 +6,12 @@
     <color name="mediumGray">#52575C</color>
     <color name="mediumWhite">#E8E8E8</color>
 
-    <color name="DarkBlueBlack">#25282B</color>
+    <color name="dark_blue_black">#25282B</color>
 
-    <color name="DarkGray">#4A4A4A</color>
-    <color name="lightGay">#929292</color>
-    <color name="lightGray">#31B057</color>
+    <color name="dark_gray">#4A4A4A</color>
+    <color name="light_gay">#929292</color>
+    <color name="green">#31B057</color>
 
-    <color name="AppTitle">@color/DarkBlueBlack</color>
+    <color name="app_title">@color/dark_blue_black</color>
+    <color name="item_text_color">@color/mediumGray</color>
 </resources>

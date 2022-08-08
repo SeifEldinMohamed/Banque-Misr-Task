@@ -2,4 +2,13 @@
     <string name="app_name">Banque Misrt Task</string>
     <string name="trending">Trending</string>
     <string name="menu_image_description">menu image description</string>
+    <string name="author">author</string>
+    <string name="name">name</string>
+    <string name="avatar_image_description">avatar image description</string>
+    <string name="description">description</string>
+    <string name="language">C++</string>
+    <string name="_14_236">14,236</string>
+    <string name="star_image_description">star image description</string>
+    <string name="fork_image_description">fork image description</string>
+    <string name="_4_376">4,376</string>
 </resources>
