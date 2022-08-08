@@ -2,7 +2,7 @@ package com.seif.banquemisrttask.utils
 
 class Constants {
     companion object {
-        const val BASE_URL = "https://api.github.com/repositories"
+        const val BASE_URL = "https://api.github.com/"
     }
 }
 // https://api.github.com/repositories
