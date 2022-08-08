@@ -11,4 +11,6 @@
     <string name="star_image_description">star image description</string>
     <string name="fork_image_description">fork image description</string>
     <string name="_4_376">4,376</string>
+    <string name="sort_by_stars">Sort by stars</string>
+    <string name="sort_by_name">Sort by Name</string>
 </resources>
