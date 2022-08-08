@@ -1,4 +1,4 @@
-package com.seif.banquemisrttask.utils
+package com.seif.banquemisrttask.util
 
 class Constants {
     companion object {
