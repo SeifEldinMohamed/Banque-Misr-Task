@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Banque Misrt Task</string>
+    <string name="trending">Trending</string>
+    <string name="menu_image_description">menu image description</string>
 </resources>
