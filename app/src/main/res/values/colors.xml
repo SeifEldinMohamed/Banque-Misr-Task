@@ -9,9 +9,10 @@
     <color name="dark_blue_black">#25282B</color>
 
     <color name="dark_gray">#4A4A4A</color>
-    <color name="light_gay">#929292</color>
+    <color name="light_gray">#929292</color>
     <color name="green">#31B057</color>
 
     <color name="app_title">@color/dark_blue_black</color>
     <color name="item_text_color">@color/mediumGray</color>
+    <color name="fill_background_color">@color/mediumWhite</color>
 </resources>

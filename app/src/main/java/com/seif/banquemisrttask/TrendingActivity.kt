@@ -2,10 +2,14 @@ package com.seif.banquemisrttask
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.seif.banquemisrttask.databinding.TrendingMainBinding
 
 class TrendingActivity : AppCompatActivity() {
+    lateinit var binding: TrendingMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.trending_main)
+        binding = TrendingMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.shimmerFrameLayout.startShimmer()
     }
 }
