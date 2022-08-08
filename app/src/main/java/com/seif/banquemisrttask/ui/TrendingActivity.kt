@@ -1,4 +1,4 @@
-package com.seif.banquemisrttask
+package com.seif.banquemisrttask.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
