@@ -7,10 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.OrientationHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.seif.banquemisrttask.R
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
@@ -35,6 +32,10 @@ class TrendingActivity : AppCompatActivity() {
 
         setUpRecyclerView()
         requestApiData()
+        binding.btnRetry.setOnClickListener {
+            binding.constraintRetry.visibility = View.GONE
+            requestApiData()
+        }
     }
 
     private fun requestApiData() {
@@ -49,10 +50,7 @@ class TrendingActivity : AppCompatActivity() {
                     }
                 }
                 is NetworkResult.Error -> {
-                     showRecyclerViewAndHideShimmerEffect()
-                    // show retry button to user
-                    Snackbar.make(binding.root, response.message.toString(), Snackbar.LENGTH_LONG)
-                        .show()
+                    showRetryAndHideShimmerEffectAndRecyclerView()
                     Log.d("main",response.message.toString())
                 }
                 is NetworkResult.Loading -> {
@@ -66,7 +64,6 @@ class TrendingActivity : AppCompatActivity() {
         binding.rvTrending.apply {
             layoutManager = LinearLayoutManager(this@TrendingActivity)
             adapter = trendingAdapter
-           // addItemDecoration(DividerItemDecoration(this@TrendingActivity, OrientationHelper.VERTICAL))
         }
         showShimmerEffectAndHideRecyclerView()
     }
@@ -90,8 +87,8 @@ class TrendingActivity : AppCompatActivity() {
 
     private fun showRecyclerViewAndHideShimmerEffect() {
         binding.shimmerFrameLayout.apply {
-            visibility = View.GONE
             stopShimmer()
+            visibility = View.GONE
         }
         binding.rvTrending.visibility = View.VISIBLE
     }
@@ -102,5 +99,14 @@ class TrendingActivity : AppCompatActivity() {
             startShimmer()
         }
         binding.rvTrending.visibility = View.GONE
+    }
+
+    private fun showRetryAndHideShimmerEffectAndRecyclerView() {
+        binding.shimmerFrameLayout.apply {
+            stopShimmer()
+            visibility = View.GONE
+        }
+        binding.rvTrending.visibility = View.GONE
+        binding.constraintRetry.visibility = View.VISIBLE
     }
 }

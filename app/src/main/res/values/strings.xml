@@ -13,4 +13,8 @@
     <string name="_4_376">4,376</string>
     <string name="sort_by_stars">Sort by stars</string>
     <string name="sort_by_name">Sort by Name</string>
+    <string name="something_went_wrong">Something went wrong..</string>
+    <string name="an_alien_is_probably_blocking_your_signal">An alien is probably blocking your signal.</string>
+    <string name="no_internet_connection_image_description">no internet connection image description</string>
+    <string name="retry">Retry</string>
 </resources>
