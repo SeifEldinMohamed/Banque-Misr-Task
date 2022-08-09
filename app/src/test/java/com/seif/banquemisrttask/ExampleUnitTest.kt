@@ -15,3 +15,9 @@ class ExampleUnitTest {
         assertEquals(4, 2 + 2)
     }
 }
+// has internet connection
+// has no internet connection -> show retry design
+// has internet and response is successful
+// has internet and response is failed
+// swiped refresh and has internet -> request api
+// swiped refresh and has no internet -> show retry design

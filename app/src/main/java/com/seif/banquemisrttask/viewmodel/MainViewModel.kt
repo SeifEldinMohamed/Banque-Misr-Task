@@ -9,8 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.seif.banquemisrttask.data.Repository
-import com.seif.banquemisrttask.data.database.entities.TrendingRepositories
-import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesItem
+import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

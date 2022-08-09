@@ -87,5 +87,8 @@ dependencies {
 
     // Swipere Refresh Layout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    // google truth
+    testImplementation "com.google.truth:truth:1.0.1"
+
 
 }

@@ -1,4 +1,4 @@
-package com.seif.banquemisrttask.data.database.entities
+package com.seif.banquemisrttask.data.network.models
 
 
 import com.google.gson.annotations.SerializedName
