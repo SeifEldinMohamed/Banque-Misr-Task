@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seif.banquemisrttask.R
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
@@ -14,6 +15,7 @@ import com.seif.banquemisrttask.ui.adapters.TrendingRepositoriesAdapter
 import com.seif.banquemisrttask.util.NetworkResult
 import com.seif.banquemisrttask.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TrendingActivity : AppCompatActivity() {
@@ -30,7 +32,8 @@ class TrendingActivity : AppCompatActivity() {
         supportActionBar?.title = ""
 
         setUpRecyclerView()
-        requestApiData()
+        readDatabase()
+
         binding.btnRetry.setOnClickListener {
             requestApiData()
         }
@@ -40,7 +43,25 @@ class TrendingActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun readDatabase() {
+        lifecycleScope.launch {
+            mainViewModel.readTrendingRepositories.observe(this@TrendingActivity) { database ->
+                if (database.isNotEmpty()) {
+                    Log.d("trending", "read data from database called")
+                    trendingAdapter.addTrendingRepositories(database[0].trendingRepositories)
+                    showRecyclerViewAndHideShimmerEffect()
+                    binding.constraintRetry.visibility = View.GONE
+                }
+                else { // database is empty (first time)
+                    requestApiData()
+                }
+            }
+        }
+    }
+
     private fun requestApiData() {
+        Log.d("trending", "requestApiData called")
         mainViewModel.getTrendingRepositories()
         mainViewModel.trendingRepositoriesResponse.observe(this) { response ->
             when (response) {

@@ -10,5 +10,5 @@ class TrendingRepositoriesEntity(
     var trendingRepositories: TrendingRepositories
 ) {
     @PrimaryKey(autoGenerate = false) // to keep only the newest data coming from api (only one row)
-    val id: Int = 0
+    var id: Int = 0
 }
