@@ -5,13 +5,13 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.seif.banquemisrttask.data.Repository
+import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.lang.Exception
@@ -23,6 +23,18 @@ class MainViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) { // since we will need a application reference so we will use AndroidViewModel
 
+    /** ROOM Database **/
+    val readTrendingRepositories: LiveData<List<TrendingRepositoriesEntity>> =
+        repository.locale.readTrendingRepositories().asLiveData()
+
+    private fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.locale.insertTrendingRepositories(trendingRepositoriesEntity)
+        }
+    }
+
+    /** Retrofit **/
+
     var trendingRepositoriesResponse: MutableLiveData<NetworkResult<TrendingRepositories>> =
         MutableLiveData()
 
@@ -33,14 +45,21 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun getTrendingRepositoriesSafeCall() {
-        trendingRepositoriesResponse.value = NetworkResult.Loading() // loading state until we get data from api
+        trendingRepositoriesResponse.value =
+            NetworkResult.Loading() // loading state until we get data from api
         if (hasInternetConnection()) {
             try {
+
                 val response = repository.remote.getTrendingRepositories()
                 trendingRepositoriesResponse.value = handleTrendingRepositoriesResponse(response)
-            }
-            catch (e:Exception) {
-                trendingRepositoriesResponse.value = NetworkResult.Error("something went wrong ${e.message}")
+                val trendingRepositories = trendingRepositoriesResponse.value!!.data
+                trendingRepositories?.let {
+                    offlineCacheRepositories(it)
+                }
+
+            } catch (e: Exception) {
+                trendingRepositoriesResponse.value =
+                    NetworkResult.Error("something went wrong ${e.message}")
             }
 
         } else {
@@ -48,11 +67,17 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun offlineCacheRepositories(trendingRepositories: TrendingRepositories) {
+        val trendingRepositoriesEntity = TrendingRepositoriesEntity(trendingRepositories)
+        insertTrendingRepositories(trendingRepositoriesEntity)
+    }
+
     private fun handleTrendingRepositoriesResponse(response: Response<TrendingRepositories>): NetworkResult<TrendingRepositories>? {
         return when {
             response.message().toString().contains("timeout") -> NetworkResult.Error("Timeout")
             response.code() == 404 -> NetworkResult.Error("Not Found")
-            response.body().isNullOrEmpty() -> NetworkResult.Error("Trending Repositories Not Found.")
+            response.body()
+                .isNullOrEmpty() -> NetworkResult.Error("Trending Repositories Not Found.")
             response.isSuccessful -> { // we will return trending repositories from api
                 response.body()?.let {
                     NetworkResult.Success(it)
