@@ -9,6 +9,6 @@ import com.seif.banquemisrttask.util.Constants.Companion.TRENDING_REPOSITORIES_T
 class TrendingRepositoriesEntity(
     var trendingRepositories: TrendingRepositories
 ) {
-    @PrimaryKey(autoGenerate = false) // to keep only the newest data coming from api
+    @PrimaryKey(autoGenerate = false) // to keep only the newest data coming from api (only one row)
     val id: Int = 0
 }
