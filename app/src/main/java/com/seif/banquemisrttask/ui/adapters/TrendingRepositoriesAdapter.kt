@@ -3,10 +3,12 @@ package com.seif.banquemisrttask.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.seif.banquemisrttask.data.database.entities.TrendingRepositories
 import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesItem
 import com.seif.banquemisrttask.databinding.ItemTrendingRowBinding
+import com.seif.banquemisrttask.util.RepositoriesDiffUtil
 import com.squareup.picasso.Picasso
 
 class TrendingRepositoriesAdapter :
@@ -61,7 +63,10 @@ class TrendingRepositoriesAdapter :
     override fun getItemCount() = trendingRepositories.size
 
     fun addTrendingRepositories(newTrendingRepositories: TrendingRepositories) {
+        val diffUtilCallback = RepositoriesDiffUtil(this.trendingRepositories, newTrendingRepositories)
+        val result = DiffUtil.calculateDiff(diffUtilCallback)
         this.trendingRepositories = newTrendingRepositories
-        // diff util
+        result.dispatchUpdatesTo(this)
     }
 }
+
