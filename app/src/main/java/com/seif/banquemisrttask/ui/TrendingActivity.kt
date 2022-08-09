@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seif.banquemisrttask.R
-import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
 import com.seif.banquemisrttask.ui.adapters.TrendingRepositoriesAdapter
 import com.seif.banquemisrttask.util.NetworkResult
@@ -24,6 +23,7 @@ class TrendingActivity : AppCompatActivity() {
     lateinit var binding: TrendingMainBinding
     private val trendingAdapter: TrendingRepositoriesAdapter by lazy { TrendingRepositoriesAdapter() }
     lateinit var mainViewModel: MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TrendingMainBinding.inflate(layoutInflater)
@@ -44,7 +44,6 @@ class TrendingActivity : AppCompatActivity() {
             binding.swiptToRefresh.isRefreshing = false
         }
     }
-
 
     private fun readDatabase() {
         lifecycleScope.launch {
@@ -106,10 +105,23 @@ class TrendingActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_sort_by_name -> {
-
+                sortReposByName()
+            }
+            R.id.menu_sort_by_stars -> {
             }
         }
         return true
+    }
+
+    private fun sortReposByName() {
+        lifecycleScope.launch {
+            mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) {
+                it?.let {
+                    trendingAdapter.addTrendingRepositoriesItem(mainViewModel.sortReposByName(it))
+                }
+                binding.rvTrending.scrollToPosition(0)
+            }
+        }
     }
 
     private fun showRecyclerViewAndHideShimmerEffect() {

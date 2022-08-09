@@ -9,6 +9,7 @@ import androidx.lifecycle.*
 import com.seif.banquemisrttask.data.Repository
 import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
+import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -101,6 +102,12 @@ class MainViewModel @Inject constructor(
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
             else -> false
+        }
+    }
+
+    fun sortReposByName(trendingRepositoriesEntity: List<TrendingRepositoriesEntity>): List<TrendingRepositoriesItem> {
+        return  trendingRepositoriesEntity[0].trendingRepositories.sortedBy { trendingRepositoriesItem ->
+            trendingRepositoriesItem.name
         }
     }
 }
