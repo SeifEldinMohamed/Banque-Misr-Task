@@ -53,7 +53,7 @@ class TrendingActivity : AppCompatActivity() {
             mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) { database ->
                 if (database.isNotEmpty()) {
                     Log.d("trending", "read data from database called")
-                    trendingAdapter.addTrendingRepositories(database[0].trendingRepositories)
+                    trendingAdapter.addTrendingRepositoriesItem(database[0].trendingRepositories)
                     showRecyclerViewAndHideShimmerEffect()
                     binding.constraintRetry.visibility = View.GONE
                 }
@@ -73,7 +73,7 @@ class TrendingActivity : AppCompatActivity() {
                     showRecyclerViewAndHideShimmerEffect()
                     binding.constraintRetry.visibility = View.GONE
                     response.data?.let {
-                        trendingAdapter.addTrendingRepositories(it)
+                        trendingAdapter.addTrendingRepositoriesItem(it)
                         binding.rvTrending.scrollToPosition(0)
                         Log.d("main",it.toString())
                     }

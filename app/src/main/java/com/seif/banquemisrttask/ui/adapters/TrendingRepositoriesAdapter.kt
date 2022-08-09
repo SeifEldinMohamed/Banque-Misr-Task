@@ -62,17 +62,13 @@ class TrendingRepositoriesAdapter :
 
     override fun getItemCount() = trendingRepositories.size
 
-    fun addTrendingRepositories(newTrendingRepositories: TrendingRepositories) {
-        val diffUtilCallback = RepositoriesDiffUtil(this.trendingRepositories, newTrendingRepositories)
-        val result = DiffUtil.calculateDiff(diffUtilCallback)
-        this.trendingRepositories = newTrendingRepositories
-        result.dispatchUpdatesTo(this)
-    }
-    fun addTrendingRepositoriesItem(newTrendingRepositoriesItem: List<TrendingRepositoriesItem>) {
+
+    fun addTrendingRepositoriesItem(newTrendingRepositoriesItem: List<TrendingRepositoriesItem>) { // used in sorting
         val diffUtilCallback = RepositoriesDiffUtil(this.trendingRepositories, newTrendingRepositoriesItem)
         val result = DiffUtil.calculateDiff(diffUtilCallback)
         this.trendingRepositories = newTrendingRepositoriesItem
         result.dispatchUpdatesTo(this)
     }
+
 }
 
