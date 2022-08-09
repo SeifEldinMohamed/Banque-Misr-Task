@@ -16,6 +16,7 @@ import com.seif.banquemisrttask.util.NetworkResult
 import com.seif.banquemisrttask.util.observeOnce
 import com.seif.banquemisrttask.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -93,6 +94,9 @@ class TrendingActivity : AppCompatActivity() {
         binding.rvTrending.apply {
             layoutManager = LinearLayoutManager(this@TrendingActivity)
             adapter = trendingAdapter
+        }
+        binding.rvTrending.itemAnimator = ScaleInTopAnimator().apply {
+            addDuration = 200
         }
         showShimmerEffectAndHideRecyclerView()
     }
