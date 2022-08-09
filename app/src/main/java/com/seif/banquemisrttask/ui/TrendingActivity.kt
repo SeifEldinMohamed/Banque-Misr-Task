@@ -4,10 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import com.seif.banquemisrttask.R
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
-import kotlinx.coroutines.withTimeout
 
 class TrendingActivity : AppCompatActivity() {
     lateinit var binding: TrendingMainBinding
