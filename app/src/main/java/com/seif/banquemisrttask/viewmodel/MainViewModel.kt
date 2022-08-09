@@ -49,7 +49,6 @@ class MainViewModel @Inject constructor(
             NetworkResult.Loading() // loading state until we get data from api
         if (hasInternetConnection()) {
             try {
-
                 val response = repository.remote.getTrendingRepositories()
                 trendingRepositoriesResponse.value = handleTrendingRepositoriesResponse(response)
                 val trendingRepositories = trendingRepositoriesResponse.value!!.data

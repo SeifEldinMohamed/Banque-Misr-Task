@@ -68,5 +68,11 @@ class TrendingRepositoriesAdapter :
         this.trendingRepositories = newTrendingRepositories
         result.dispatchUpdatesTo(this)
     }
+    fun addTrendingRepositoriesItem(newTrendingRepositoriesItem: List<TrendingRepositoriesItem>) {
+        val diffUtilCallback = RepositoriesDiffUtil(this.trendingRepositories, newTrendingRepositoriesItem)
+        val result = DiffUtil.calculateDiff(diffUtilCallback)
+        this.trendingRepositories = newTrendingRepositoriesItem
+        result.dispatchUpdatesTo(this)
+    }
 }
 

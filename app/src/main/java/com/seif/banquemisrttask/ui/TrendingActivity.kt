@@ -10,9 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seif.banquemisrttask.R
+import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
 import com.seif.banquemisrttask.ui.adapters.TrendingRepositoriesAdapter
 import com.seif.banquemisrttask.util.NetworkResult
+import com.seif.banquemisrttask.util.observeOnce
 import com.seif.banquemisrttask.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -46,7 +48,9 @@ class TrendingActivity : AppCompatActivity() {
 
     private fun readDatabase() {
         lifecycleScope.launch {
-            mainViewModel.readTrendingRepositories.observe(this@TrendingActivity) { database ->
+            // we used this observeOnce extension function to handle the second trigger of this observer after caching the coming data in database
+            // ( avoid reading from database after requesting data form api)
+            mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) { database ->
                 if (database.isNotEmpty()) {
                     Log.d("trending", "read data from database called")
                     trendingAdapter.addTrendingRepositories(database[0].trendingRepositories)
@@ -70,6 +74,7 @@ class TrendingActivity : AppCompatActivity() {
                     binding.constraintRetry.visibility = View.GONE
                     response.data?.let {
                         trendingAdapter.addTrendingRepositories(it)
+                        binding.rvTrending.scrollToPosition(0)
                         Log.d("main",it.toString())
                     }
                 }
@@ -101,8 +106,6 @@ class TrendingActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_sort_by_name -> {
-            }
-            R.id.menu_sort_by_stars -> {
 
             }
         }
