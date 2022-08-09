@@ -7,7 +7,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.OrientationHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.seif.banquemisrttask.R
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
@@ -63,6 +66,7 @@ class TrendingActivity : AppCompatActivity() {
         binding.rvTrending.apply {
             layoutManager = LinearLayoutManager(this@TrendingActivity)
             adapter = trendingAdapter
+           // addItemDecoration(DividerItemDecoration(this@TrendingActivity, OrientationHelper.VERTICAL))
         }
         showShimmerEffectAndHideRecyclerView()
     }
