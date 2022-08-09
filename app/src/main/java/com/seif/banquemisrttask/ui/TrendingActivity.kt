@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.seif.banquemisrttask.R
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
 import com.seif.banquemisrttask.ui.adapters.TrendingRepositoriesAdapter
@@ -33,8 +32,11 @@ class TrendingActivity : AppCompatActivity() {
         setUpRecyclerView()
         requestApiData()
         binding.btnRetry.setOnClickListener {
-            binding.constraintRetry.visibility = View.GONE
             requestApiData()
+        }
+        binding.swiptToRefresh.setOnRefreshListener {
+            requestApiData()
+            binding.swiptToRefresh.isRefreshing = false
         }
     }
 
@@ -44,6 +46,7 @@ class TrendingActivity : AppCompatActivity() {
             when (response) {
                 is NetworkResult.Success -> {
                     showRecyclerViewAndHideShimmerEffect()
+                    binding.constraintRetry.visibility = View.GONE
                     response.data?.let {
                         trendingAdapter.addTrendingRepositories(it)
                         Log.d("main",it.toString())
@@ -54,6 +57,7 @@ class TrendingActivity : AppCompatActivity() {
                     Log.d("main",response.message.toString())
                 }
                 is NetworkResult.Loading -> {
+                    binding.constraintRetry.visibility = View.GONE
                     showShimmerEffectAndHideRecyclerView()
                 }
             }
@@ -69,7 +73,6 @@ class TrendingActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        Log.d("main", "created")
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
