@@ -68,6 +68,7 @@ class TrendingActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        Log.d("main", "created")
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
