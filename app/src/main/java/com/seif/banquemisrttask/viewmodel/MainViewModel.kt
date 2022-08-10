@@ -130,6 +130,11 @@ class MainViewModel @Inject constructor(
         }.toCollection(ArrayList())
     }
 
+    fun sortReposByStars(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
+        return trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
+            item.stars
+        }.toCollection(ArrayList())
+    }
 
 }
 

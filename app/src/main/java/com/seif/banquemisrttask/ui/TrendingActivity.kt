@@ -144,6 +144,7 @@ class TrendingActivity : AppCompatActivity() {
                 sortReposByName()
             }
             R.id.menu_sort_by_stars -> {
+                sortReposByStars()
             }
         }
         return true
@@ -154,6 +155,18 @@ class TrendingActivity : AppCompatActivity() {
             it?.let { trendingRepositories ->
                 val sortedTrendingRepositories =
                     mainViewModel.sortReposByName(trendingRepositories.toCollection(ArrayList()))
+                trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
+                trendingRepositoriesList = sortedTrendingRepositories
+            }
+            binding.rvTrending.scrollToPosition(0)
+        }
+    }
+
+    private fun sortReposByStars() {
+        mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) {
+            it?.let { trendingRepositories ->
+                val sortedTrendingRepositories =
+                    mainViewModel.sortReposByStars(trendingRepositories.toCollection(ArrayList()))
                 trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
                 trendingRepositoriesList = sortedTrendingRepositories
             }
