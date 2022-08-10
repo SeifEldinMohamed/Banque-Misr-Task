@@ -44,26 +44,25 @@ class TrendingActivity : AppCompatActivity() {
         setUpRecyclerView()
 
         AppSharedPreference.readIsFirstTime("isFirstTime", true)?.let {
-            if(it){
+            if (it) {
                 mainViewModel.getTrendingRepositories()
                 AppSharedPreference.writeIsFirstTime("isFirstTime", false)
             }
         }
 
 
-        if(savedInstanceState != null){
-            val trendingList = savedInstanceState.getParcelableArrayList<TrendingRepositoriesItem>("trendingList")
-            if(trendingList != null){
+        if (savedInstanceState != null) {
+            val trendingList =
+                savedInstanceState.getParcelableArrayList<TrendingRepositoriesItem>("trendingList")
+            if (trendingList != null) {
                 trendingAdapter.addTrendingRepositoriesItem(trendingList)
                 trendingRepositoriesList = trendingList
                 showRecyclerViewAndHideShimmerEffect()
                 binding.constraintRetry.visibility = View.GONE
-            }
-            else {
+            } else {
                 observeDatabase()
             }
-        }
-        else{
+        } else {
             observeDatabase()
         }
 
@@ -79,23 +78,22 @@ class TrendingActivity : AppCompatActivity() {
         }
     }
 
-     private fun observeDatabase() {
-            // we used this observeOnce extension function to handle the second trigger of this observer after caching the coming data in database
-            // ( avoid reading from database after requesting data form api)
-            mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) { database ->
-                if (database.isNotEmpty()) {
-                    Log.d("trending", "read data from database")
+    private fun observeDatabase() {
+        // we used this observeOnce extension function to handle the second trigger of this observer after caching the coming data in database
+        // ( avoid reading from database after requesting data form api)
+        mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) { database ->
+            if (database.isNotEmpty()) {
+                Log.d("trending", "read data from database")
 
-                    trendingAdapter.addTrendingRepositoriesItem(database[0].trendingRepositories)
-                    trendingRepositoriesList = database[0].trendingRepositories
+                trendingAdapter.addTrendingRepositoriesItem(database[0].trendingRepositories)
+                trendingRepositoriesList = database[0].trendingRepositories
 
-                    showRecyclerViewAndHideShimmerEffect()
-                    binding.constraintRetry.visibility = View.GONE
-                }
-                else { // database is empty (first time)
-                    requestApiData()
-                }
+                showRecyclerViewAndHideShimmerEffect()
+                binding.constraintRetry.visibility = View.GONE
+            } else { // database is empty (first time)
+                requestApiData()
             }
+        }
     }
 
     private fun requestApiData() {
@@ -112,13 +110,13 @@ class TrendingActivity : AppCompatActivity() {
                         trendingRepositoriesList = it
 
                         binding.rvTrending.scrollToPosition(0)
-                       // Log.d("main", it.toString())
+                        // Log.d("main", it.toString())
                     }
                 }
 
                 is NetworkResult.Error -> {
                     showRetryAndHideShimmerEffectAndRecyclerView()
-                   // Log.d("main", response.message.toString())
+                    // Log.d("main", response.message.toString())
                 }
 
                 is NetworkResult.Loading -> {
@@ -160,7 +158,8 @@ class TrendingActivity : AppCompatActivity() {
         lifecycleScope.launch {
             mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) {
                 it?.let { trendingRepositories ->
-                    val sortedTrendingRepositories = mainViewModel.sortReposByName(trendingRepositories.toCollection(ArrayList()))
+                    val sortedTrendingRepositories =
+                        mainViewModel.sortReposByName(trendingRepositories.toCollection(ArrayList()))
                     trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
                     trendingRepositoriesList = sortedTrendingRepositories
                 }
@@ -198,6 +197,5 @@ class TrendingActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList("trendingList", trendingRepositoriesList)
     }
-
 
 }

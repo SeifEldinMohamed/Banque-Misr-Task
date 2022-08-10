@@ -36,19 +36,16 @@ class MainViewModel @Inject constructor(
     }
 
     private fun offlineCacheRepositories(trendingRepositories: TrendingRepositories) {
-        val trendingRepositoriesEntity = TrendingRepositoriesEntity(0,trendingRepositories)
+        val trendingRepositoriesEntity = TrendingRepositoriesEntity(0, trendingRepositories)
         insertTrendingRepositories(trendingRepositoriesEntity)
     }
 
     /** Retrofit **/
 
-    var trendingRepositoriesResponse: MutableLiveData<NetworkResult<TrendingRepositories>> = MutableLiveData()
+    var trendingRepositoriesResponse: MutableLiveData<NetworkResult<TrendingRepositories>> =
+        MutableLiveData()
 
-    init {
-       // getTrendingRepositories()
-    }
-
-     fun getTrendingRepositories() {
+    fun getTrendingRepositories() {
         viewModelScope.launch {
             getTrendingRepositoriesSafeCall()
         }
@@ -56,24 +53,23 @@ class MainViewModel @Inject constructor(
 
     private suspend fun getTrendingRepositoriesSafeCall() {
         // loading state until we get data from api
-            trendingRepositoriesResponse.value = NetworkResult.Loading()
-            if (hasInternetConnection()) {
-                Log.d("viewModel", "request data form api")
-                try {
-                    val response: Response<TrendingRepositories> = repository.remote.getTrendingRepositories()
+        trendingRepositoriesResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            Log.d("viewModel", "request data form api")
+            try {
+                val response: Response<TrendingRepositories> =
+                    repository.remote.getTrendingRepositories()
 
-                    // success or failure
-                    trendingRepositoriesResponse.value = handleTrendingRepositoriesResponse(response)
+                // success or failure
+                trendingRepositoriesResponse.value = handleTrendingRepositoriesResponse(response)
 
-                }
-                catch (e: Exception) {
-                    trendingRepositoriesResponse.value =
-                        NetworkResult.Error("something went wrong ${e.message}")
-                }
+            } catch (e: Exception) {
+                trendingRepositoriesResponse.value =
+                    NetworkResult.Error("something went wrong ${e.message}")
             }
-            else {
-                trendingRepositoriesResponse.value = NetworkResult.Error("No Internet Connection")
-            }
+        } else {
+            trendingRepositoriesResponse.value = NetworkResult.Error("No Internet Connection")
+        }
     }
 
 
@@ -116,7 +112,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun sortReposByName(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
-        return  trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
+        return trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
             item.name
         }.toCollection(ArrayList())
     }
