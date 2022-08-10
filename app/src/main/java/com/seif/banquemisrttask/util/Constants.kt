@@ -8,6 +8,9 @@ class Constants {
         // ROOM
         const val DATABASE_NAME = "repositories_database"
         const val TRENDING_REPOSITORIES_TABLE = "trending_table"
+
+        // Alarm Manager
+        const val TWO_HOURS_INTERVAL = 7200000L
     }
 }
 // https://api.github.com/repositories

@@ -1,5 +1,8 @@
 package com.seif.banquemisrttask.ui
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seif.banquemisrttask.R
+import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
 import com.seif.banquemisrttask.ui.adapters.TrendingRepositoriesAdapter
 import com.seif.banquemisrttask.util.NetworkResult
@@ -56,8 +60,7 @@ class TrendingActivity : AppCompatActivity() {
                     trendingAdapter.addTrendingRepositoriesItem(database[0].trendingRepositories)
                     showRecyclerViewAndHideShimmerEffect()
                     binding.constraintRetry.visibility = View.GONE
-                }
-                else { // database is empty (first time)
+                } else { // database is empty (first time)
                     requestApiData()
                 }
             }
@@ -67,21 +70,25 @@ class TrendingActivity : AppCompatActivity() {
     private fun requestApiData() {
         Log.d("trending", "requestApiData called")
         mainViewModel.getTrendingRepositories()
-        mainViewModel.trendingRepositoriesResponse.observe(this) { response ->
+        // this observer triggers when ( ex: loading, success, failure)
+        mainViewModel.trendingRepositoriesResponse.observe(this) { response: NetworkResult<TrendingRepositories> ->
             when (response) {
                 is NetworkResult.Success -> {
                     showRecyclerViewAndHideShimmerEffect()
                     binding.constraintRetry.visibility = View.GONE
+
                     response.data?.let {
                         trendingAdapter.addTrendingRepositoriesItem(it)
                         binding.rvTrending.scrollToPosition(0)
-                        Log.d("main",it.toString())
+                        Log.d("main", it.toString())
                     }
                 }
+
                 is NetworkResult.Error -> {
                     showRetryAndHideShimmerEffectAndRecyclerView()
-                    Log.d("main",response.message.toString())
+                    Log.d("main", response.message.toString())
                 }
+
                 is NetworkResult.Loading -> {
                     binding.constraintRetry.visibility = View.GONE
                     showShimmerEffectAndHideRecyclerView()
@@ -152,4 +159,10 @@ class TrendingActivity : AppCompatActivity() {
         binding.rvTrending.visibility = View.GONE
         binding.constraintRetry.visibility = View.VISIBLE
     }
+
+//    inner class AlarmBroadcastReceiver : BroadcastReceiver() {
+//        override fun onReceive(p0: Context?, p1: Intent?) {
+//            requestApiData()
+//        }
+//    }
 }

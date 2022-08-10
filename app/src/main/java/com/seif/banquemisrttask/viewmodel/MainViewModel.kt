@@ -1,7 +1,10 @@
 package com.seif.banquemisrttask.viewmodel
 
+import android.app.AlarmManager
 import android.app.Application
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -10,6 +13,8 @@ import com.seif.banquemisrttask.data.Repository
 import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.ui.TrendingActivity
+import com.seif.banquemisrttask.util.Constants.Companion.TWO_HOURS_INTERVAL
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,13 +30,17 @@ class MainViewModel @Inject constructor(
 ) : AndroidViewModel(application) { // since we will need a application reference so we will use AndroidViewModel
 
     /** ROOM Database **/
-    val readTrendingRepositories: LiveData<List<TrendingRepositoriesEntity>> =
-        repository.locale.readTrendingRepositories().asLiveData()
+    val readTrendingRepositories: LiveData<List<TrendingRepositoriesEntity>> = repository.locale.readTrendingRepositories().asLiveData()
 
     private fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.locale.insertTrendingRepositories(trendingRepositoriesEntity)
         }
+    }
+
+    private fun offlineCacheRepositories(trendingRepositories: TrendingRepositories) {
+        val trendingRepositoriesEntity = TrendingRepositoriesEntity(trendingRepositories)
+        insertTrendingRepositories(trendingRepositoriesEntity)
     }
 
     /** Retrofit **/
@@ -46,38 +55,36 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun getTrendingRepositoriesSafeCall() {
-        trendingRepositoriesResponse.value =
-            NetworkResult.Loading() // loading state until we get data from api
+        // loading state until we get data from api
+        trendingRepositoriesResponse.value = NetworkResult.Loading()
         if (hasInternetConnection()) {
             try {
-                val response = repository.remote.getTrendingRepositories()
+                val response: Response<TrendingRepositories> = repository.remote.getTrendingRepositories()
+                // success or failure
                 trendingRepositoriesResponse.value = handleTrendingRepositoriesResponse(response)
-                val trendingRepositories = trendingRepositoriesResponse.value!!.data
+
+                // caching data
+                val trendingRepositories: TrendingRepositories? = trendingRepositoriesResponse.value!!.data
                 trendingRepositories?.let {
                     offlineCacheRepositories(it)
                 }
-
             } catch (e: Exception) {
-                trendingRepositoriesResponse.value =
-                    NetworkResult.Error("something went wrong ${e.message}")
+                trendingRepositoriesResponse.value = NetworkResult.Error("something went wrong ${e.message}")
             }
 
-        } else {
+        }
+        else {
             trendingRepositoriesResponse.value = NetworkResult.Error("No Internet Connection")
         }
     }
 
-    private fun offlineCacheRepositories(trendingRepositories: TrendingRepositories) {
-        val trendingRepositoriesEntity = TrendingRepositoriesEntity(trendingRepositories)
-        insertTrendingRepositories(trendingRepositoriesEntity)
-    }
 
     private fun handleTrendingRepositoriesResponse(response: Response<TrendingRepositories>): NetworkResult<TrendingRepositories>? {
         return when {
             response.message().toString().contains("timeout") -> NetworkResult.Error("Timeout")
             response.code() == 404 -> NetworkResult.Error("Not Found")
-            response.body()
-                .isNullOrEmpty() -> NetworkResult.Error("Trending Repositories Not Found.")
+            response.body().isNullOrEmpty() -> NetworkResult.Error("Trending Repositories Not Found.")
+
             response.isSuccessful -> { // we will return trending repositories from api
                 response.body()?.let {
                     NetworkResult.Success(it)
@@ -106,10 +113,12 @@ class MainViewModel @Inject constructor(
     }
 
     fun sortReposByName(trendingRepositoriesEntity: List<TrendingRepositoriesEntity>): List<TrendingRepositoriesItem> {
-        return  trendingRepositoriesEntity[0].trendingRepositories.sortedBy { trendingRepositoriesItem ->
+        return trendingRepositoriesEntity[0].trendingRepositories.sortedBy { trendingRepositoriesItem ->
             trendingRepositoriesItem.name
         }
     }
+
+
 }
 
 // A cellular network or mobile network is a type of wireless connection facilitated by cellular towers.
@@ -118,3 +127,5 @@ class MainViewModel @Inject constructor(
 // ethernet is used to connect devices within a local area network (LAN). It’s a much smaller connection system than the internet.
 
 // WiFi is capable of doing most of this wirelessly, which is more convenient, but slower.
+
+// 2 hours = 7200000 milliseconds
