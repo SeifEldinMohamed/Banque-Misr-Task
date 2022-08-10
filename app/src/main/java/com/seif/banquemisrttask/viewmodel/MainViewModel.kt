@@ -14,7 +14,7 @@ import com.seif.banquemisrttask.data.Repository
 import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.data.sharedprefrence.AppSharedPreference
+import com.seif.banquemisrttask.data.database.sharedprefrence.AppSharedPreference
 import com.seif.banquemisrttask.ui.TrendingActivity
 import com.seif.banquemisrttask.util.Constants.Companion.TWO_HOURS_INTERVAL
 import com.seif.banquemisrttask.util.NetworkResult

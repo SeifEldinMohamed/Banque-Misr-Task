@@ -1,4 +1,4 @@
-package com.seif.banquemisrttask.data.sharedprefrence
+package com.seif.banquemisrttask.data.database.sharedprefrence
 
 import android.app.Activity
 import android.content.Context
