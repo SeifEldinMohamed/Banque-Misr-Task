@@ -158,8 +158,8 @@ class TrendingActivity : AppCompatActivity() {
 
     private fun sortReposByName() {
         lifecycleScope.launch {
-            mainViewModel.trendingRepositoriesResponse.observeOnce(this@TrendingActivity) {
-                it?.data?.let { trendingRepositories ->
+            mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) {
+                it?.let { trendingRepositories ->
                     val sortedTrendingRepositories = mainViewModel.sortReposByName(trendingRepositories.toCollection(ArrayList()))
                     trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
                     trendingRepositoriesList = sortedTrendingRepositories

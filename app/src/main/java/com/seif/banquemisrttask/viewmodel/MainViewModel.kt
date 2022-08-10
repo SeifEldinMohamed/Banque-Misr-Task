@@ -115,8 +115,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun sortReposByName(trendingRepositoriesItem: ArrayList<TrendingRepositoriesItem>): ArrayList<TrendingRepositoriesItem> {
-        return  trendingRepositoriesItem.sortedBy { item ->
+    fun sortReposByName(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
+        return  trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
             item.name
         }.toCollection(ArrayList())
     }
