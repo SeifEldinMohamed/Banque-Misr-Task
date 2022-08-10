@@ -11,6 +11,7 @@ import com.seif.banquemisrttask.data.Repository
 import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.data.sharedprefrence.AppSharedPreference
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,8 +27,9 @@ class MainViewModel @Inject constructor(
 ) : AndroidViewModel(application) { // since we will need a application reference so we will use AndroidViewModel
 
     /** ROOM Database **/
-    val readTrendingRepositories: LiveData<List<TrendingRepositoriesEntity>> =
+    val readTrendingRepositories: LiveData<List<TrendingRepositoriesEntity>> by lazy {
         repository.locale.readTrendingRepositories().asLiveData()
+    }
 
     private fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -42,8 +44,20 @@ class MainViewModel @Inject constructor(
 
     /** Retrofit **/
 
-    var trendingRepositoriesResponse: MutableLiveData<NetworkResult<TrendingRepositories>> =
+    val trendingRepositoriesResponse: MutableLiveData<NetworkResult<TrendingRepositories>> by lazy {
         MutableLiveData()
+    }
+
+    // call data from api if it's first time user enter app
+    fun requestDataForFirstTime(context: Context) {
+        AppSharedPreference.init(context)
+        AppSharedPreference.readIsFirstTime("isFirstTime", true)?.let {
+            if (it) {
+                getTrendingRepositories()
+                AppSharedPreference.writeIsFirstTime("isFirstTime", false)
+            }
+        }
+    }
 
     fun getTrendingRepositories() {
         viewModelScope.launch {
@@ -71,7 +85,6 @@ class MainViewModel @Inject constructor(
             trendingRepositoriesResponse.value = NetworkResult.Error("No Internet Connection")
         }
     }
-
 
     private fun handleTrendingRepositoriesResponse(response: Response<TrendingRepositories>): NetworkResult<TrendingRepositories>? {
         return when {
@@ -116,6 +129,7 @@ class MainViewModel @Inject constructor(
             item.name
         }.toCollection(ArrayList())
     }
+
 
 }
 

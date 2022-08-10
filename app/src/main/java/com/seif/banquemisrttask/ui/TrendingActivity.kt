@@ -7,12 +7,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seif.banquemisrttask.R
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.data.sharedprefrence.AppSharedPreference
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
 import com.seif.banquemisrttask.ui.adapters.TrendingRepositoriesAdapter
 import com.seif.banquemisrttask.util.NetworkResult
@@ -20,7 +18,6 @@ import com.seif.banquemisrttask.util.observeOnce
 import com.seif.banquemisrttask.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -36,21 +33,28 @@ class TrendingActivity : AppCompatActivity() {
         binding = TrendingMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        AppSharedPreference.init(this)
-
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
         setUpRecyclerView()
 
-        AppSharedPreference.readIsFirstTime("isFirstTime", true)?.let {
-            if (it) {
-                mainViewModel.getTrendingRepositories()
-                AppSharedPreference.writeIsFirstTime("isFirstTime", false)
-            }
+        mainViewModel.requestDataForFirstTime(this)
+
+        // handle configuration changes
+        handleConfigurationChanges(savedInstanceState)
+
+        binding.btnRetry.setOnClickListener {
+            mainViewModel.getTrendingRepositories()
+            requestApiData()
         }
+        binding.swiptToRefresh.setOnRefreshListener {
+            mainViewModel.getTrendingRepositories()
+            requestApiData()
+            binding.swiptToRefresh.isRefreshing = false
+        }
+    }
 
-
+    private fun handleConfigurationChanges(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             val trendingList =
                 savedInstanceState.getParcelableArrayList<TrendingRepositoriesItem>("trendingList")
@@ -64,17 +68,6 @@ class TrendingActivity : AppCompatActivity() {
             }
         } else {
             observeDatabase()
-        }
-
-
-        binding.btnRetry.setOnClickListener {
-            mainViewModel.getTrendingRepositories()
-            requestApiData()
-        }
-        binding.swiptToRefresh.setOnRefreshListener {
-            mainViewModel.getTrendingRepositories()
-            requestApiData()
-            binding.swiptToRefresh.isRefreshing = false
         }
     }
 
@@ -100,29 +93,31 @@ class TrendingActivity : AppCompatActivity() {
         Log.d("trending", "requestApiData called")
         // this observer triggers when ( ex: loading, success, failure)
         mainViewModel.trendingRepositoriesResponse.observe(this) { response: NetworkResult<TrendingRepositories> ->
-            when (response) {
-                is NetworkResult.Success -> {
-                    showRecyclerViewAndHideShimmerEffect()
-                    binding.constraintRetry.visibility = View.GONE
+            handleNetworkResponse(response)
+        }
+    }
 
-                    response.data?.let {
-                        trendingAdapter.addTrendingRepositoriesItem(it)
-                        trendingRepositoriesList = it
+    private fun handleNetworkResponse(response: NetworkResult<TrendingRepositories>) {
+        when (response) {
+            is NetworkResult.Success -> {
+                showRecyclerViewAndHideShimmerEffect()
+                binding.constraintRetry.visibility = View.GONE
 
-                        binding.rvTrending.scrollToPosition(0)
-                        // Log.d("main", it.toString())
-                    }
+                response.data?.let {
+                    trendingAdapter.addTrendingRepositoriesItem(it)
+                    trendingRepositoriesList = it
+
+                    binding.rvTrending.scrollToPosition(0)
+                    // Log.d("main", it.toString())
                 }
-
-                is NetworkResult.Error -> {
-                    showRetryAndHideShimmerEffectAndRecyclerView()
-                    // Log.d("main", response.message.toString())
-                }
-
-                is NetworkResult.Loading -> {
-                    binding.constraintRetry.visibility = View.GONE
-                    showShimmerEffectAndHideRecyclerView()
-                }
+            }
+            is NetworkResult.Error -> {
+                showRetryAndHideShimmerEffectAndRecyclerView()
+                // Log.d("main", response.message.toString())
+            }
+            is NetworkResult.Loading -> {
+                binding.constraintRetry.visibility = View.GONE
+                showShimmerEffectAndHideRecyclerView()
             }
         }
     }
@@ -131,9 +126,9 @@ class TrendingActivity : AppCompatActivity() {
         binding.rvTrending.apply {
             layoutManager = LinearLayoutManager(this@TrendingActivity)
             adapter = trendingAdapter
-        }
-        binding.rvTrending.itemAnimator = ScaleInTopAnimator().apply {
-            addDuration = 200
+            itemAnimator = ScaleInTopAnimator().apply {
+                addDuration = 200
+            }
         }
         showShimmerEffectAndHideRecyclerView()
     }
@@ -155,16 +150,14 @@ class TrendingActivity : AppCompatActivity() {
     }
 
     private fun sortReposByName() {
-        lifecycleScope.launch {
-            mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) {
-                it?.let { trendingRepositories ->
-                    val sortedTrendingRepositories =
-                        mainViewModel.sortReposByName(trendingRepositories.toCollection(ArrayList()))
-                    trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
-                    trendingRepositoriesList = sortedTrendingRepositories
-                }
-                binding.rvTrending.scrollToPosition(0)
+        mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) {
+            it?.let { trendingRepositories ->
+                val sortedTrendingRepositories =
+                    mainViewModel.sortReposByName(trendingRepositories.toCollection(ArrayList()))
+                trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
+                trendingRepositoriesList = sortedTrendingRepositories
             }
+            binding.rvTrending.scrollToPosition(0)
         }
     }
 
