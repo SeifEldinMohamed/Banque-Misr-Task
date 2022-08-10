@@ -1,5 +1,8 @@
 package com.seif.banquemisrttask.ui
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,11 +23,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 
 
+private lateinit var mainViewModel: MainViewModel
+
 @AndroidEntryPoint
 class TrendingActivity : AppCompatActivity() {
     private lateinit var binding: TrendingMainBinding
     private val trendingAdapter: TrendingRepositoriesAdapter by lazy { TrendingRepositoriesAdapter() }
-    private lateinit var mainViewModel: MainViewModel
 
     private lateinit var trendingRepositoriesList: ArrayList<TrendingRepositoriesItem>
 
@@ -202,6 +206,13 @@ class TrendingActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList("trendingList", trendingRepositoriesList)
+    }
+
+    class AlarmBroadcastReceiver() : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            mainViewModel.getTrendingRepositories()
+            Log.d("trending", "refresh cached data ${System.currentTimeMillis()}")
+        }
     }
 
 }

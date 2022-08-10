@@ -1,7 +1,10 @@
 package com.seif.banquemisrttask.viewmodel
 
+import android.app.AlarmManager
 import android.app.Application
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -12,6 +15,8 @@ import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntit
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
 import com.seif.banquemisrttask.data.sharedprefrence.AppSharedPreference
+import com.seif.banquemisrttask.ui.TrendingActivity
+import com.seif.banquemisrttask.util.Constants.Companion.TWO_HOURS_INTERVAL
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +59,7 @@ class MainViewModel @Inject constructor(
         AppSharedPreference.readIsFirstTime("isFirstTime", true)?.let {
             if (it) {
                 getTrendingRepositories()
+                scheduleAlarmToRefreshCachedData(context)
                 AppSharedPreference.writeIsFirstTime("isFirstTime", false)
             }
         }
@@ -134,6 +140,26 @@ class MainViewModel @Inject constructor(
         return trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
             item.stars
         }.toCollection(ArrayList())
+    }
+
+    private fun scheduleAlarmToRefreshCachedData(context: Context) { // refresh cached data every 2 hours
+        val alarmIntent = Intent(context, TrendingActivity.AlarmBroadcastReceiver()::class.java)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            alarmIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager : AlarmManager =  context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP, // type of Alarm
+            System.currentTimeMillis()   , // time in milliseconds that the alarm should first go off, using the appropriate clock (depending on the alarm type).
+            TWO_HOURS_INTERVAL, // interval in milliseconds between subsequent repeats of the alarm.
+            pendingIntent // Action to perform when the alarm goes off
+        )
+        Log.d("trending", "scheduled alarm manager to goes of at ${System.currentTimeMillis() + TWO_HOURS_INTERVAL}")
     }
 
 }
