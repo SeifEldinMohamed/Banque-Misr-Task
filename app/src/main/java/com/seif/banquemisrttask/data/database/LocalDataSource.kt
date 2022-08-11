@@ -4,14 +4,14 @@ import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntit
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-
 class LocalDataSource @Inject constructor(
     private val trendingRepositoriesDao: TrendingRepositoriesDao
 ) {
-    fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>> {
+     fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>> {
         return trendingRepositoriesDao.readTrendingRepositories()
     }
-    suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
+
+     suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
         trendingRepositoriesDao.insertTrendingRepositories(trendingRepositoriesEntity)
     }
 }

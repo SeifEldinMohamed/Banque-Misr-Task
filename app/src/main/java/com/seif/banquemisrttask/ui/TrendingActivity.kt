@@ -49,11 +49,11 @@ class TrendingActivity : AppCompatActivity() {
 
         binding.btnRetry.setOnClickListener {
             mainViewModel.getTrendingRepositories()
-            requestApiData()
+            observeApiData()
         }
         binding.swiptToRefresh.setOnRefreshListener {
             mainViewModel.getTrendingRepositories()
-            requestApiData()
+            observeApiData()
             binding.swiptToRefresh.isRefreshing = false
         }
     }
@@ -67,10 +67,12 @@ class TrendingActivity : AppCompatActivity() {
                 trendingRepositoriesList = trendingList
                 showRecyclerViewAndHideShimmerEffect()
                 binding.constraintRetry.visibility = View.GONE
-            } else {
+            }
+            else {
                 observeDatabase()
             }
-        } else {
+        }
+        else {
             observeDatabase()
         }
     }
@@ -87,13 +89,15 @@ class TrendingActivity : AppCompatActivity() {
 
                 showRecyclerViewAndHideShimmerEffect()
                 binding.constraintRetry.visibility = View.GONE
-            } else { // database is empty (first time)
-                requestApiData()
+            }
+            else { // database is empty (first time to load)
+                mainViewModel.getTrendingRepositories()
+                observeApiData()
             }
         }
     }
 
-    private fun requestApiData() {
+    private fun observeApiData() {
         Log.d("trending", "requestApiData called")
         // this observer triggers when ( ex: loading, success, failure)
         mainViewModel.trendingRepositoriesResponse.observe(this) { response: NetworkResult<TrendingRepositories> ->
@@ -156,25 +160,29 @@ class TrendingActivity : AppCompatActivity() {
 
     private fun sortReposByName() {
         mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) {
-            it?.let { trendingRepositories ->
-                val sortedTrendingRepositories =
-                    mainViewModel.sortReposByName(trendingRepositories.toCollection(ArrayList()))
-                trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
-                trendingRepositoriesList = sortedTrendingRepositories
+            if(it.isNotEmpty()){
+                it?.let { trendingRepositories ->
+                    val sortedTrendingRepositories =
+                        mainViewModel.sortReposByName(trendingRepositories.toCollection(ArrayList()))
+                    trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
+                    trendingRepositoriesList = sortedTrendingRepositories
+                    binding.rvTrending.scrollToPosition(0)
+                }
             }
-            binding.rvTrending.scrollToPosition(0)
         }
     }
 
     private fun sortReposByStars() {
         mainViewModel.readTrendingRepositories.observeOnce(this@TrendingActivity) {
-            it?.let { trendingRepositories ->
-                val sortedTrendingRepositories =
-                    mainViewModel.sortReposByStars(trendingRepositories.toCollection(ArrayList()))
-                trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
-                trendingRepositoriesList = sortedTrendingRepositories
+            if(it.isNotEmpty()){
+                it?.let { trendingRepositories ->
+                    val sortedTrendingRepositories =
+                        mainViewModel.sortReposByStars(trendingRepositories.toCollection(ArrayList()))
+                    trendingAdapter.addTrendingRepositoriesItem(sortedTrendingRepositories)
+                    trendingRepositoriesList = sortedTrendingRepositories
+                    binding.rvTrending.scrollToPosition(0)
+                }
             }
-            binding.rvTrending.scrollToPosition(0)
         }
     }
 

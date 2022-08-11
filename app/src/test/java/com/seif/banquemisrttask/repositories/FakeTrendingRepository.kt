@@ -5,12 +5,12 @@ import androidx.lifecycle.asFlow
 import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.util.NetworkResult
+import com.seif.banquemisrttask.data.repositories.Repository
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
 
-class FakeTrendingRepository { // make this class to test viewModel
-
+class FakeTrendingRepository: Repository { // make this class to test viewModel
     private val trendingRepositoriesItems = mutableListOf<TrendingRepositoriesEntity>()
 
     private val observeTrendingRepositoriesItem =
@@ -22,18 +22,23 @@ class FakeTrendingRepository { // make this class to test viewModel
         shouldReturnNetworkError = value
     }
 
+
     private fun refreshLifeData() {
         observeTrendingRepositoriesItem.postValue(trendingRepositoriesItems)
     }
 
-    // remote (Api)
-    suspend fun getTrendingRepositories(): NetworkResult<TrendingRepositories> {
+    override fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>> {
+        return observeTrendingRepositoriesItem.asFlow()
+    }
 
-        return if(shouldReturnNetworkError){ // if we want to return an error
-            NetworkResult.Error("error")
-        }
-        else{
-            val trendingRepositoriesList = arrayListOf<TrendingRepositoriesItem>(
+    override suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
+        trendingRepositoriesItems.add(trendingRepositoriesEntity)
+        refreshLifeData()
+    }
+
+    override suspend fun getTrendingRepositories(): Response<TrendingRepositories> {
+
+        val trendingRepositoriesList = arrayListOf<TrendingRepositoriesItem>(
                 TrendingRepositoriesItem(
                     "seif",
                     "https://picsum.photos/seed/picsum/200/300",
@@ -48,18 +53,43 @@ class FakeTrendingRepository { // make this class to test viewModel
             val trendingRepositories = TrendingRepositories()
             trendingRepositories.addAll(trendingRepositoriesList)
 
-            NetworkResult.Success(trendingRepositories)
-        }
+        return Response.success(trendingRepositories)
     }
 
-    // local (ROOM)
-    fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>> {
-        return observeTrendingRepositoriesItem.asFlow()
-    }
-
-    suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
-        trendingRepositoriesItems.add(trendingRepositoriesEntity)
-        refreshLifeData()
-    }
+//    // remote (Api)
+//    suspend fun getTrendingRepositories(): NetworkResult<TrendingRepositories> {
+//
+//        return if(shouldReturnNetworkError){ // if we want to return an error
+//            NetworkResult.Error("error")
+//        }
+//        else{
+//            val trendingRepositoriesList = arrayListOf<TrendingRepositoriesItem>(
+//                TrendingRepositoriesItem(
+//                    "seif",
+//                    "https://picsum.photos/seed/picsum/200/300",
+//                    "hello, this seif's repository",
+//                    1000,
+//                    "Kotlin",
+//                    "#000000",
+//                    "My Kotlin Repository",
+//                    2000,
+//                    "https://picsum.photos/seed/picsum/200/300"
+//                ))
+//            val trendingRepositories = TrendingRepositories()
+//            trendingRepositories.addAll(trendingRepositoriesList)
+//
+//            NetworkResult.Success(trendingRepositories)
+//        }
+//    }
+//
+//    // local (ROOM)
+//    fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>> {
+//        return observeTrendingRepositoriesItem.asFlow()
+//    }
+//
+//    suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
+//        trendingRepositoriesItems.add(trendingRepositoriesEntity)
+//        refreshLifeData()
+//    }
 
 }

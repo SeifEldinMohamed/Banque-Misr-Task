@@ -10,11 +10,11 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.*
-import com.seif.banquemisrttask.data.Repository
 import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
 import com.seif.banquemisrttask.data.database.sharedprefrence.AppSharedPreference
+import com.seif.banquemisrttask.data.repositories.Repository
 import com.seif.banquemisrttask.ui.TrendingActivity
 import com.seif.banquemisrttask.util.Constants.Companion.TWO_HOURS_INTERVAL
 import com.seif.banquemisrttask.util.NetworkResult
@@ -33,16 +33,16 @@ class MainViewModel @Inject constructor(
 
     /** ROOM Database **/
     val readTrendingRepositories: LiveData<List<TrendingRepositoriesEntity>> by lazy {
-        repository.locale.readTrendingRepositories().asLiveData()
+        repository.readTrendingRepositories().asLiveData()
     }
 
-    private fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
+     private fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.locale.insertTrendingRepositories(trendingRepositoriesEntity)
+            repository.insertTrendingRepositories(trendingRepositoriesEntity)
         }
     }
 
-    private fun offlineCacheRepositories(trendingRepositories: TrendingRepositories) {
+     private fun offlineCacheRepositories(trendingRepositories: TrendingRepositories) {
         val trendingRepositoriesEntity = TrendingRepositoriesEntity(0, trendingRepositories)
         insertTrendingRepositories(trendingRepositoriesEntity)
     }
@@ -71,14 +71,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTrendingRepositoriesSafeCall() {
+     private suspend fun getTrendingRepositoriesSafeCall() {
         // loading state until we get data from api
         trendingRepositoriesResponse.value = NetworkResult.Loading()
         if (hasInternetConnection()) {
             Log.d("viewModel", "request data form api")
             try {
                 val response: Response<TrendingRepositories> =
-                    repository.remote.getTrendingRepositories()
+                    repository.getTrendingRepositories()
 
                 // success or failure
                 trendingRepositoriesResponse.value = handleTrendingRepositoriesResponse(response)
@@ -92,7 +92,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun handleTrendingRepositoriesResponse(response: Response<TrendingRepositories>): NetworkResult<TrendingRepositories>? {
+      fun handleTrendingRepositoriesResponse(response: Response<TrendingRepositories>): NetworkResult<TrendingRepositories>? {
         return when {
             response.message().toString().contains("timeout") -> NetworkResult.Error("Timeout")
             response.code() == 404 -> NetworkResult.Error("Not Found")
@@ -113,7 +113,7 @@ class MainViewModel @Inject constructor(
     }
 
     // function to check internet connectivity ( returns true when internet is reliable and it will return false if not
-    private fun hasInternetConnection(): Boolean {
+     fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<Application>().getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
@@ -159,6 +159,7 @@ class MainViewModel @Inject constructor(
             TWO_HOURS_INTERVAL, // interval in milliseconds between subsequent repeats of the alarm.
             pendingIntent // Action to perform when the alarm goes off
         )
+        Log.d("trending", "scheduled alarm manager to goes of at ${System.currentTimeMillis() }")
         Log.d("trending", "scheduled alarm manager to goes of at ${System.currentTimeMillis() + TWO_HOURS_INTERVAL}")
     }
 
