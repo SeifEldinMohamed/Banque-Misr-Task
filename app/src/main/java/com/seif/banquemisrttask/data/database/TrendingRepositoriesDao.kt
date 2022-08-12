@@ -16,4 +16,5 @@ interface TrendingRepositoriesDao {
 
     @Query("SELECT * FROM TRENDING_TABLE ORDER BY id")
     fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>>
+
 }

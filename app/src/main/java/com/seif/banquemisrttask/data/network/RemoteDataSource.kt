@@ -1,6 +1,5 @@
 package com.seif.banquemisrttask.data.network
 
-import android.util.Log
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.util.NetworkResult
 import retrofit2.Response
@@ -15,7 +14,6 @@ class RemoteDataSource @Inject constructor(
     }
 
     private fun handleTrendingRepositoriesResponse(response: Response<TrendingRepositories>): NetworkResult<TrendingRepositories>? {
-        Log.d("trending", "handle response called")
         return when {
             response.message().toString().contains("timeout") -> NetworkResult.Error("Timeout")
             response.code() == 404 -> NetworkResult.Error("Not Found")
@@ -24,8 +22,6 @@ class RemoteDataSource @Inject constructor(
 
             response.isSuccessful -> { // we will return trending repositories from api
                 response.body()?.let {
-                    // caching data
-                  ////  offlineCacheRepositories(it)
                     NetworkResult.Success(it)
                 }
             }

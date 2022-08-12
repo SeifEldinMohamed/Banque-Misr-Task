@@ -14,17 +14,17 @@ class AppSharedPreference {
                     context.getSharedPreferences(context.packageName, Activity.MODE_PRIVATE)
         }
 
-        fun readIsFirstTime(key: String, defValue: Boolean) =
+        fun readLastTimeDataFetched(key: String, defValue: Long) =
             sharedPref?.let { sharedPref ->
                 defValue.let { value ->
-                    sharedPref.getBoolean(key, value)
+                    sharedPref.getLong(key, value)
                 }
             }
 
-        fun writeIsFirstTime(key: String, value: Boolean) {
+        fun writeLastTimeDataFetched(key: String, value: Long) {
             sharedPref?.edit()?.let { prefsEditor ->
                 value.let { value ->
-                    prefsEditor.putBoolean(key, value)
+                    prefsEditor.putLong(key, value)
                     prefsEditor.apply()
                 }
             }

@@ -1,10 +1,7 @@
 package com.seif.banquemisrttask.viewmodel
 
-import android.app.AlarmManager
 import android.app.Application
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -15,19 +12,18 @@ import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
 import com.seif.banquemisrttask.data.database.sharedprefrence.AppSharedPreference
 import com.seif.banquemisrttask.data.repositories.Repository
-import com.seif.banquemisrttask.ui.AlarmBroadcastReceiver
 import com.seif.banquemisrttask.util.Constants.Companion.TWO_HOURS_INTERVAL
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Response
+import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: com.seif.banquemisrttask.data.Repository,
+    private val repository: Repository,
     application: Application
 ) : AndroidViewModel(application) { // since we will need a application reference so we will use AndroidViewModel
 
@@ -36,29 +32,24 @@ class MainViewModel @Inject constructor(
         repository.readTrendingRepositories().asLiveData()
     }
 
-//    private fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repository.insertTrendingRepositories(trendingRepositoriesEntity)
-//        }
-//    }
-
-
     /** Retrofit **/
-
     val trendingRepositoriesResponse: MutableLiveData<NetworkResult<TrendingRepositories>> by lazy {
         MutableLiveData()
     }
 
-    // call data from api if it's first time user enter app
-    fun requestDataForFirstTime(context: Context) {
-        AppSharedPreference.init(context)
-        AppSharedPreference.readIsFirstTime("isFirstTime", true)?.let {
-            if (it) {
-                getTrendingRepositories()
-                scheduleAlarmToRefreshCachedData(context)
-                AppSharedPreference.writeIsFirstTime("isFirstTime", false)
-            }
+
+    fun shouldFetchData(): Boolean {
+        val lastTimeDataFetched = AppSharedPreference.readLastTimeDataFetched("fetchTime", 0L)
+        Log.d("trending", "last time data fetched $lastTimeDataFetched")
+        Log.d("trending", "current time  ${System.currentTimeMillis()}")
+        lastTimeDataFetched?.let {
+            Log.d(
+                "trending",
+                "should fetch ${it + TWO_HOURS_INTERVAL <= System.currentTimeMillis()}"
+            )
+            return it + TWO_HOURS_INTERVAL <= System.currentTimeMillis()
         }
+        return false
     }
 
     fun getTrendingRepositories() {
@@ -71,13 +62,9 @@ class MainViewModel @Inject constructor(
         // loading state until we get data from api
         trendingRepositoriesResponse.postValue(NetworkResult.Loading())
         if (hasInternetConnection()) {
-            Log.d("viewModel", "request data form api")
+            Log.d("trending", "request data form api")
             try {
-                val response: NetworkResult<TrendingRepositories>? =
-                    repository.getTrendingRepositories()
-
-                // success or failure
-                response.let {
+                repository.getTrendingRepositories().let {
                     trendingRepositoriesResponse.postValue(it)
                 }
 
@@ -87,7 +74,7 @@ class MainViewModel @Inject constructor(
                 )
             }
         } else {
-            trendingRepositoriesResponse.postValue( NetworkResult.Error("No Internet Connection"))
+            trendingRepositoriesResponse.postValue(NetworkResult.Error("No Internet Connection"))
         }
     }
 
@@ -110,41 +97,20 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun sortReposByName(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
-        return trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
-            item.name
-        }.toCollection(ArrayList())
+    suspend fun sortReposByName(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
+        return withContext(Dispatchers.IO) {
+            trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
+                item.name
+            }.toCollection(ArrayList())
+        }
     }
 
-    fun sortReposByStars(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
-        return trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
-            item.stars
-        }.toCollection(ArrayList())
-    }
-
-    private fun scheduleAlarmToRefreshCachedData(context: Context) { // refresh cached data every 2 hours
-        val alarmIntent = Intent(context, AlarmBroadcastReceiver()::class.java)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            0,
-            alarmIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarmManager: AlarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP, // type of Alarm
-            System.currentTimeMillis(), // time in milliseconds that the alarm should first go off, using the appropriate clock (depending on the alarm type).
-            TWO_HOURS_INTERVAL, // interval in milliseconds between subsequent repeats of the alarm.
-            pendingIntent // Action to perform when the alarm goes off
-        )
-        Log.d("trending", "scheduled alarm manager to goes of at ${System.currentTimeMillis()}")
-//        Log.d(
-//            "trending",
-//            "scheduled alarm manager to goes of at ${System.currentTimeMillis() + TWO_HOURS_INTERVAL}"
-//        )
+    suspend fun sortReposByStars(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
+        return withContext(Dispatchers.IO) {
+            trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
+                item.stars
+            }.toCollection(ArrayList())
+        }
     }
 
 }
