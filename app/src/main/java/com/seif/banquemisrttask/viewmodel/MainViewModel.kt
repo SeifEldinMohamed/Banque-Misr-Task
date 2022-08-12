@@ -15,7 +15,7 @@ import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
 import com.seif.banquemisrttask.data.database.sharedprefrence.AppSharedPreference
 import com.seif.banquemisrttask.data.repositories.Repository
-import com.seif.banquemisrttask.ui.TrendingActivity
+import com.seif.banquemisrttask.ui.AlarmBroadcastReceiver
 import com.seif.banquemisrttask.util.Constants.Companion.TWO_HOURS_INTERVAL
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: Repository,
+    private val repository: com.seif.banquemisrttask.data.Repository,
     application: Application
 ) : AndroidViewModel(application) { // since we will need a application reference so we will use AndroidViewModel
 
@@ -36,16 +36,12 @@ class MainViewModel @Inject constructor(
         repository.readTrendingRepositories().asLiveData()
     }
 
-     private fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.insertTrendingRepositories(trendingRepositoriesEntity)
-        }
-    }
+//    private fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repository.insertTrendingRepositories(trendingRepositoriesEntity)
+//        }
+//    }
 
-     private fun offlineCacheRepositories(trendingRepositories: TrendingRepositories) {
-        val trendingRepositoriesEntity = TrendingRepositoriesEntity(0, trendingRepositories)
-        insertTrendingRepositories(trendingRepositoriesEntity)
-    }
 
     /** Retrofit **/
 
@@ -66,54 +62,38 @@ class MainViewModel @Inject constructor(
     }
 
     fun getTrendingRepositories() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             getTrendingRepositoriesSafeCall()
         }
     }
 
-     private suspend fun getTrendingRepositoriesSafeCall() {
+    private suspend fun getTrendingRepositoriesSafeCall() {
         // loading state until we get data from api
-        trendingRepositoriesResponse.value = NetworkResult.Loading()
+        trendingRepositoriesResponse.postValue(NetworkResult.Loading())
         if (hasInternetConnection()) {
             Log.d("viewModel", "request data form api")
             try {
-                val response: Response<TrendingRepositories> =
+                val response: NetworkResult<TrendingRepositories>? =
                     repository.getTrendingRepositories()
 
                 // success or failure
-                trendingRepositoriesResponse.value = handleTrendingRepositoriesResponse(response)
+                response.let {
+                    trendingRepositoriesResponse.postValue(it)
+                }
 
             } catch (e: Exception) {
-                trendingRepositoriesResponse.value =
+                trendingRepositoriesResponse.postValue(
                     NetworkResult.Error("something went wrong ${e.message}")
+                )
             }
         } else {
-            trendingRepositoriesResponse.value = NetworkResult.Error("No Internet Connection")
+            trendingRepositoriesResponse.postValue( NetworkResult.Error("No Internet Connection"))
         }
     }
 
-      fun handleTrendingRepositoriesResponse(response: Response<TrendingRepositories>): NetworkResult<TrendingRepositories>? {
-        return when {
-            response.message().toString().contains("timeout") -> NetworkResult.Error("Timeout")
-            response.code() == 404 -> NetworkResult.Error("Not Found")
-            response.body()
-                .isNullOrEmpty() -> NetworkResult.Error("Trending Repositories Not Found.")
-
-            response.isSuccessful -> { // we will return trending repositories from api
-                response.body()?.let {
-                    // caching data
-                    offlineCacheRepositories(it)
-                    Log.d("trending", "data cached in database")
-
-                    NetworkResult.Success(it)
-                }
-            }
-            else -> NetworkResult.Error(response.message())
-        }
-    }
 
     // function to check internet connectivity ( returns true when internet is reliable and it will return false if not
-     fun hasInternetConnection(): Boolean {
+    private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<Application>().getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
@@ -143,7 +123,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun scheduleAlarmToRefreshCachedData(context: Context) { // refresh cached data every 2 hours
-        val alarmIntent = Intent(context, TrendingActivity.AlarmBroadcastReceiver()::class.java)
+        val alarmIntent = Intent(context, AlarmBroadcastReceiver()::class.java)
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -152,15 +132,19 @@ class MainViewModel @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val alarmManager : AlarmManager =  context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager: AlarmManager =
+            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP, // type of Alarm
-            System.currentTimeMillis()   , // time in milliseconds that the alarm should first go off, using the appropriate clock (depending on the alarm type).
+            System.currentTimeMillis(), // time in milliseconds that the alarm should first go off, using the appropriate clock (depending on the alarm type).
             TWO_HOURS_INTERVAL, // interval in milliseconds between subsequent repeats of the alarm.
             pendingIntent // Action to perform when the alarm goes off
         )
-        Log.d("trending", "scheduled alarm manager to goes of at ${System.currentTimeMillis() }")
-        Log.d("trending", "scheduled alarm manager to goes of at ${System.currentTimeMillis() + TWO_HOURS_INTERVAL}")
+        Log.d("trending", "scheduled alarm manager to goes of at ${System.currentTimeMillis()}")
+//        Log.d(
+//            "trending",
+//            "scheduled alarm manager to goes of at ${System.currentTimeMillis() + TWO_HOURS_INTERVAL}"
+//        )
     }
 
 }

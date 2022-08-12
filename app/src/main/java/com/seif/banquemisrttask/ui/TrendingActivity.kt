@@ -216,11 +216,12 @@ class TrendingActivity : AppCompatActivity() {
         outState.putParcelableArrayList("trendingList", trendingRepositoriesList)
     }
 
-    class AlarmBroadcastReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            mainViewModel.getTrendingRepositories()
-            Log.d("trending", "refresh cached data ${System.currentTimeMillis()}")
-        }
-    }
+}
 
+
+class AlarmBroadcastReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        mainViewModel.getTrendingRepositories()
+        Log.d("trending", "refresh cached data ${System.currentTimeMillis()}")
+    }
 }
