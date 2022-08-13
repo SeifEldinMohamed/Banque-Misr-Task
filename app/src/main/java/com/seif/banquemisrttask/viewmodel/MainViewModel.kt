@@ -25,7 +25,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val repository: Repository,
     application: Application
-) : AndroidViewModel(application) { // since we will need a application reference so we will use AndroidViewModel
+) : AndroidViewModel(application) { // since we will need an application reference, so we will use AndroidViewModel
 
     /** ROOM Database **/
     val readTrendingRepositories: LiveData<List<TrendingRepositoriesEntity>> by lazy {
@@ -37,19 +37,8 @@ class MainViewModel @Inject constructor(
         MutableLiveData()
     }
 
-
     fun shouldFetchData(): Boolean {
-        val lastTimeDataFetched = AppSharedPreference.readLastTimeDataFetched("fetchTime", 0L)
-        Log.d("trending", "last time data fetched $lastTimeDataFetched")
-        Log.d("trending", "current time  ${System.currentTimeMillis()}")
-        lastTimeDataFetched?.let {
-            Log.d(
-                "trending",
-                "should fetch ${it + TWO_HOURS_INTERVAL <= System.currentTimeMillis()}"
-            )
-            return it + TWO_HOURS_INTERVAL <= System.currentTimeMillis()
-        }
-        return false
+        return repository.shouldFetchData()
     }
 
     fun getTrendingRepositories() {
@@ -59,25 +48,21 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun getTrendingRepositoriesSafeCall() {
-        // loading state until we get data from api
-        trendingRepositoriesResponse.postValue(NetworkResult.Loading())
+        trendingRepositoriesResponse.postValue(NetworkResult.Loading()) // loading state until we get data from api
         if (hasInternetConnection()) {
             Log.d("trending", "request data form api")
             try {
-                repository.getTrendingRepositories().let {
+                repository.getTrendingRepositories()?.let {
                     trendingRepositoriesResponse.postValue(it)
                 }
-
             } catch (e: Exception) {
-                trendingRepositoriesResponse.postValue(
-                    NetworkResult.Error("something went wrong ${e.message}")
-                )
+                trendingRepositoriesResponse.postValue(NetworkResult.Error("something went wrong ${e.message}"))
             }
-        } else {
+        }
+        else {
             trendingRepositoriesResponse.postValue(NetworkResult.Error("No Internet Connection"))
         }
     }
-
 
     // function to check internet connectivity ( returns true when internet is reliable and it will return false if not
     private fun hasInternetConnection(): Boolean {

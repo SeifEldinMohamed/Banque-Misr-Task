@@ -13,5 +13,6 @@ interface Repository {
 
     // Remote (Api)
     suspend fun getTrendingRepositories(): NetworkResult<TrendingRepositories>?
+    fun shouldFetchData(): Boolean
 
 }
