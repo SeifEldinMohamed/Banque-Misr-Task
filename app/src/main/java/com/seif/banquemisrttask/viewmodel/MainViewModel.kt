@@ -10,9 +10,7 @@ import androidx.lifecycle.*
 import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.data.database.sharedprefrence.AppSharedPreference
 import com.seif.banquemisrttask.data.repositories.Repository
-import com.seif.banquemisrttask.util.Constants.Companion.TWO_HOURS_INTERVAL
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

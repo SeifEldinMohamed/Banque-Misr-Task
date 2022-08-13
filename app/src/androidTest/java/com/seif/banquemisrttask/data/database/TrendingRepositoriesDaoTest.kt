@@ -11,31 +11,38 @@ import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntit
 import com.seif.banquemisrttask.data.getOrAwaitValueTest
 import com.seif.banquemisrttask.data.network.models.TrendingRepositories
 import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Rule
+import javax.inject.Inject
+import javax.inject.Named
 
 
 // we make sure that all tests inside this class will run on the emulator and tell jUnit that this is instrumented tests
-@RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 // // to tell junit that we write here unit tests
 @SmallTest
 class TrendingRepositoriesDaoTest {
 
     @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
+    @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var database: RepositoriesDatabase
+    //  private lateinit var database: RepositoriesDatabase
+    @Inject
+    @Named("test_db")
+    lateinit var database: RepositoriesDatabase
     private lateinit var dao: TrendingRepositoriesDao
 
     @Before
     fun setUp() {
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            RepositoriesDatabase::class.java
-        ).allowMainThreadQueries().build()
+       hiltRule.inject()
         dao = database.trendingRepositoriesDao()
     }
 
