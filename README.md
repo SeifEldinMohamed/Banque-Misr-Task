@@ -1,12 +1,11 @@
 # Banque-Misr-Task
 ### App screenshots
 <p align="center">
-  <img src="img/app1.png" height="400" width="200">
-  <img src="img/app2.png" height="400" width="200">
-  <img src="img/app3.png" height="400" width="200">
-  <img src="img/app4.png" height="400" width="200">
-  <img src="img/app5.png" height="400" width="200">
-  <img src="img/app6.png" height="400" width="200">
+ <img src="img/loading.png" height="400" width="200">
+  <img src="img/content.png" height="400" width="200">
+  <img src="img/expanded.png" height="400" width="200">
+  <img src="img/menus.png" height="400" width="200">
+  <img src="img/error.png" height="400" width="200">
 </p>
 
 
