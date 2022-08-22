@@ -5,13 +5,8 @@ import com.seif.banquemisrttask.data.datasources.remotedatasource.models.Trendin
 import com.seif.banquemisrttask.util.NetworkResult
 import kotlinx.coroutines.flow.Flow
 
-interface Repository {
-    // local (ROOM)
+interface LocalRepository {
     fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>>
     suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity)
-
-    // Remote (Api)
-    suspend fun getTrendingRepositories(): NetworkResult<TrendingRepositories>?
-    fun shouldFetchData(): Boolean
-
+    suspend fun offlineCacheRepositories(trendingRepositories: TrendingRepositories)
 }

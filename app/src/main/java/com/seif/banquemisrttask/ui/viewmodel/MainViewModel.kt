@@ -10,24 +10,27 @@ import androidx.lifecycle.*
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.domain.repository.Repository
+import com.seif.banquemisrttask.domain.usecases.*
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: Repository,
+    private val getTrendingRepositoriesUseCase: GetTrendingRepositoriesUseCase,
+    private val shouldFetchDataUseCase: ShouldFetchDataUseCase,
+    private val readTrendingRepositoriesUseCase: ReadTrendingRepositoriesUseCase,
+    private val sortTrendingRepositoriesUseCase: SortTrendingRepositoriesUseCase,
+    private val checkInternetConnectionUseCase: CheckInternetConnectionUseCase,
     application: Application
 ) : AndroidViewModel(application) { // since we will need an application reference, so we will use AndroidViewModel
 
     /** ROOM Database **/
     val readTrendingRepositories: LiveData<List<TrendingRepositoriesEntity>> by lazy {
-        repository.readTrendingRepositories().asLiveData()
+        readTrendingRepositoriesUseCase().asLiveData()
     }
 
     /** Retrofit **/
@@ -36,7 +39,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun shouldFetchData(): Boolean {
-        return repository.shouldFetchData()
+        return shouldFetchDataUseCase()
     }
 
     fun getTrendingRepositories() {
@@ -50,50 +53,32 @@ class MainViewModel @Inject constructor(
         if (hasInternetConnection()) {
             Log.d("trending", "request data form api")
             try {
-                repository.getTrendingRepositories()?.let {
+                getTrendingRepositoriesUseCase()?.let {
                     trendingRepositoriesResponse.postValue(it)
                 }
             } catch (e: Exception) {
                 trendingRepositoriesResponse.postValue(NetworkResult.Error("something went wrong ${e.message}"))
             }
-        }
-        else {
+        } else {
             trendingRepositoriesResponse.postValue(NetworkResult.Error("No Internet Connection"))
         }
     }
 
     // function to check internet connectivity ( returns true when internet is reliable and it will return false if not
     private fun hasInternetConnection(): Boolean {
-        val connectivityManager = getApplication<Application>().getSystemService(
-            Context.CONNECTIVITY_SERVICE
-        ) as ConnectivityManager
-
-        val activeNetwork: Network = connectivityManager.activeNetwork ?: return false
-        val capabilities: NetworkCapabilities =
-            connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-
-        return when { // return true if there is an internet connection from wifi, cellular and ethernet
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            else -> false
-        }
+        return checkInternetConnectionUseCase()
     }
 
-    suspend fun sortReposByName(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
-        return withContext(Dispatchers.IO) {
-            trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
-                item.name
-            }.toCollection(ArrayList())
-        }
+     suspend fun sortReposByName(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
+        return sortTrendingRepositoriesUseCase.sortTrendingRepositoriesByName(
+            trendingRepositoriesEntity
+        )
     }
 
-    suspend fun sortReposByStars(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
-        return withContext(Dispatchers.IO) {
-            trendingRepositoriesEntity[0].trendingRepositories.sortedBy { item ->
-                item.stars
-            }.toCollection(ArrayList())
-        }
+     suspend fun sortReposByStars(trendingRepositoriesEntity: ArrayList<TrendingRepositoriesEntity>): ArrayList<TrendingRepositoriesItem> {
+        return sortTrendingRepositoriesUseCase.sortTrendingRepositoriesByStars(
+            trendingRepositoriesEntity
+        )
     }
 
 }

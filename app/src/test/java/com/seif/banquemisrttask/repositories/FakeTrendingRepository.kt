@@ -5,13 +5,13 @@ import androidx.lifecycle.asFlow
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.domain.repository.Repository
+import com.seif.banquemisrttask.domain.repository.RemoteRepository
 import com.seif.banquemisrttask.util.NetworkResult
 import kotlinx.coroutines.flow.Flow
 
 
 
-class FakeTrendingRepository : Repository { // make this class to test viewModel
+class FakeTrendingRepository : RemoteRepository { // make this class to test viewModel
     private val trendingRepositoriesItems = mutableListOf<TrendingRepositoriesEntity>()
 
     private val observeTrendingRepositoriesItem =
@@ -27,14 +27,6 @@ class FakeTrendingRepository : Repository { // make this class to test viewModel
         observeTrendingRepositoriesItem.postValue(trendingRepositoriesItems)
     }
 
-    override fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>> {
-        return observeTrendingRepositoriesItem.asFlow()
-    }
-
-    override suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
-        trendingRepositoriesItems.add(trendingRepositoriesEntity)
-        refreshLifeData()
-    }
 
     override suspend fun getTrendingRepositories(): NetworkResult<TrendingRepositories> {
         return if(shouldReturnNetworkError){ // if we want to return an error

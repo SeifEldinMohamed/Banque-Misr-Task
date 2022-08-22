@@ -21,21 +21,11 @@ class LocalDataSource @Inject constructor(
     suspend fun offlineCacheRepositories(trendingRepositories: TrendingRepositories) {
         Log.d("trending", "data cached in database")
         val trendingRepositoriesEntity = TrendingRepositoriesEntity(0, trendingRepositories)
-
         withContext(Dispatchers.IO) {
             insertTrendingRepositories(trendingRepositoriesEntity)
         }
-//        coroutineScope {
-//            insertTrendingRepositories(trendingRepositoriesEntity)
-//        }
-
-//        GlobalScope.launch(Dispatchers.IO) {
-//            insertTrendingRepositories(trendingRepositoriesEntity)
-//        }
-
     }
 }
-
 
 // The withContext function is similar to coroutineScope, but it additionally allows some changes
 // to be made to the scope. The context provided as an argument to this function overrides the context
@@ -46,3 +36,11 @@ class LocalDataSource @Inject constructor(
 // Unlike async or launch, the body of coroutineScope is called in-place. It formally creates a new coroutine,
 // but it suspends the previous one until the new one is finished, so it does not start any concurrent
 // process. Take a look at the below example, in which both delay calls suspend runBlocking.
+
+//        coroutineScope {
+//            insertTrendingRepositories(trendingRepositoriesEntity)
+//        }
+
+//        GlobalScope.launch(Dispatchers.IO) {
+//            insertTrendingRepositories(trendingRepositoriesEntity)
+//        }

@@ -1,39 +1,23 @@
 package com.seif.banquemisrttask.data.repositoryImp
 
 import android.util.Log
-import com.seif.banquemisrttask.data.datasources.localdatasource.LocalDataSource
-import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.datasources.localdatasource.sharedprefrence.AppSharedPreference
 import com.seif.banquemisrttask.data.datasources.remotedatasource.RemoteDataSource
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
-import com.seif.banquemisrttask.domain.repository.Repository
+import com.seif.banquemisrttask.domain.repository.RemoteRepository
 import com.seif.banquemisrttask.util.Constants
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.scopes.ActivityRetainedScoped
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @ActivityRetainedScoped // we will have the same instance even when we rotate screen
-class DefaultRepository @Inject constructor(
-    private val localDataSource: LocalDataSource,
+class RemoteRepositoryImp @Inject constructor(
     private val remoteDataSource: RemoteDataSource
-) : Repository {
-    override fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>> {
-        return localDataSource.readTrendingRepositories()
-    }
-
-    override suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
-        localDataSource.insertTrendingRepositories(trendingRepositoriesEntity)
-    }
+) : RemoteRepository {
 
     override suspend fun getTrendingRepositories(): NetworkResult<TrendingRepositories>? {
-        val trendingRepositories = remoteDataSource.getTrendingRepositories()
-        if (trendingRepositories is NetworkResult.Success) {
-            trendingRepositories.data?.let {
-                localDataSource.offlineCacheRepositories(it)
-            }
-        }
-        return trendingRepositories
+
+        return remoteDataSource.getTrendingRepositories()
     }
 
     override fun shouldFetchData(): Boolean {

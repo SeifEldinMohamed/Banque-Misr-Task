@@ -2,7 +2,7 @@ package com.seif.banquemisrttask.repositories
 
 import org.junit.Test
 
-class FakeTrendingRepositoryTest {
+class FakeTrendingRemoteRepositoryImpTest {
 private val fakeTrendingRepository = FakeTrendingRepository()
     @Test
     fun setShouldReturnNetworkError() {
