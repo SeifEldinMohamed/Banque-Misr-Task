@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
 import com.seif.banquemisrttask.databinding.ItemTrendingRowBinding
 import com.seif.banquemisrttask.util.RepositoriesDiffUtil
 import com.squareup.picasso.Picasso

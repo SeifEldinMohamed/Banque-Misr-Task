@@ -1,4 +1,4 @@
-package com.seif.banquemisrttask.viewmodel
+package com.seif.banquemisrttask.ui.viewmodel
 
 import android.app.Application
 import android.content.Context
@@ -7,10 +7,10 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.*
-import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.network.models.TrendingRepositories
-import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.data.repositories.Repository
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

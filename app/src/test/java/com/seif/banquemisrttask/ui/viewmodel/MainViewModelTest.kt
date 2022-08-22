@@ -1,4 +1,4 @@
-package com.seif.banquemisrttask.viewmodel
+package com.seif.banquemisrttask.ui.viewmodel
 
 import androidx.test.core.app.ApplicationProvider
 import com.seif.banquemisrttask.repositories.FakeTrendingRepository

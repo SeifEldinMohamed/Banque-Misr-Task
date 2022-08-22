@@ -1,6 +1,6 @@
-package com.seif.banquemisrttask.data.network
+package com.seif.banquemisrttask.data.datasources.remotedatasource
 
-import com.seif.banquemisrttask.data.network.models.TrendingRepositories
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
 import retrofit2.Response
 import retrofit2.http.GET
 

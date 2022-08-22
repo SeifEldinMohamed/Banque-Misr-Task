@@ -1,22 +1,18 @@
-package com.seif.banquemisrttask.data.database
+package com.seif.banquemisrttask.data.datasources.localdatasource
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.asLiveData
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
-import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.getOrAwaitValueTest
-import com.seif.banquemisrttask.data.network.models.TrendingRepositories
-import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.junit.Rule
 import javax.inject.Inject
 import javax.inject.Named

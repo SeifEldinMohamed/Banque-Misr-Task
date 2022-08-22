@@ -1,7 +1,7 @@
 package com.seif.banquemisrttask.util
 
 import androidx.recyclerview.widget.DiffUtil
-import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
 
 class RepositoriesDiffUtil(
     private val oldList: List<TrendingRepositoriesItem>,

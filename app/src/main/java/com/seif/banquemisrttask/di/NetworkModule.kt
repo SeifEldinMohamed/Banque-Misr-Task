@@ -1,6 +1,6 @@
 package com.seif.banquemisrttask.di
 
-import com.seif.banquemisrttask.data.network.TrendingRepositoriesApi
+import com.seif.banquemisrttask.data.datasources.remotedatasource.TrendingRepositoriesApi
 import com.seif.banquemisrttask.util.Constants.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides

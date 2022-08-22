@@ -1,12 +1,12 @@
-package com.seif.banquemisrttask.data
+package com.seif.banquemisrttask.data.repositoryImp
 
 import android.util.Log
-import com.seif.banquemisrttask.data.database.LocalDataSource
-import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.database.sharedprefrence.AppSharedPreference
-import com.seif.banquemisrttask.data.network.RemoteDataSource
-import com.seif.banquemisrttask.data.network.models.TrendingRepositories
-import com.seif.banquemisrttask.data.repositories.Repository
+import com.seif.banquemisrttask.data.datasources.localdatasource.LocalDataSource
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.data.datasources.localdatasource.sharedprefrence.AppSharedPreference
+import com.seif.banquemisrttask.data.datasources.remotedatasource.RemoteDataSource
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
+import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.util.Constants
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.scopes.ActivityRetainedScoped

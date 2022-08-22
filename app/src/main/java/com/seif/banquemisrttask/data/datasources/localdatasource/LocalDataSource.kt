@@ -1,12 +1,11 @@
-package com.seif.banquemisrttask.data.database
+package com.seif.banquemisrttask.data.datasources.localdatasource
 
 import android.util.Log
-import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.network.models.TrendingRepositories
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 class LocalDataSource @Inject constructor(
     private val trendingRepositoriesDao: TrendingRepositoriesDao

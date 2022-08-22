@@ -2,7 +2,7 @@ package com.seif.banquemisrttask.di
 
 import android.content.Context
 import androidx.room.Room
-import com.seif.banquemisrttask.data.database.RepositoriesDatabase
+import com.seif.banquemisrttask.data.datasources.localdatasource.RepositoriesDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

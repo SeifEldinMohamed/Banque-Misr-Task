@@ -1,9 +1,9 @@
-package com.seif.banquemisrttask.data.database
+package com.seif.banquemisrttask.data.datasources.localdatasource
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 
 @Database(
     entities = [TrendingRepositoriesEntity::class],

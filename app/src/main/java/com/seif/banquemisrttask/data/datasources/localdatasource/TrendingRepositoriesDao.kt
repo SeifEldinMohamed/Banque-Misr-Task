@@ -1,11 +1,10 @@
-package com.seif.banquemisrttask.data.database
+package com.seif.banquemisrttask.data.datasources.localdatasource
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.network.models.TrendingRepositories
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -1,8 +1,8 @@
-package com.seif.banquemisrttask.data.database.entities
+package com.seif.banquemisrttask.data.datasources.localdatasource.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.seif.banquemisrttask.data.network.models.TrendingRepositories
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
 import com.seif.banquemisrttask.util.Constants.Companion.TRENDING_REPOSITORIES_TABLE
 
 @Entity(tableName = TRENDING_REPOSITORIES_TABLE)

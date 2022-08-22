@@ -2,10 +2,10 @@ package com.seif.banquemisrttask.repositories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
-import com.seif.banquemisrttask.data.database.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.network.models.TrendingRepositories
-import com.seif.banquemisrttask.data.network.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.data.repositories.Repository
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.util.NetworkResult
 import kotlinx.coroutines.flow.Flow
 
