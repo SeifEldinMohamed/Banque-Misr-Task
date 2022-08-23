@@ -11,9 +11,15 @@ import kotlinx.coroutines.flow.Flow
 interface TrendingRepositoriesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity)
+    suspend fun insertTrendingRepositories(trendingRepositoriesEntity: List<TrendingRepositoriesEntity>)
 
-    @Query("SELECT * FROM TRENDING_TABLE ORDER BY id")
+    @Query("SELECT * FROM TRENDING_TABLE")
     fun readTrendingRepositories(): Flow<List<TrendingRepositoriesEntity>>
+
+    @Query("SELECT * FROM TRENDING_TABLE order by name")
+    fun sortTrendingRepositoriesByName(): Flow<List<TrendingRepositoriesEntity>>
+
+    @Query("SELECT * FROM TRENDING_TABLE order by stars")
+    fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepositoriesEntity>>
 
 }

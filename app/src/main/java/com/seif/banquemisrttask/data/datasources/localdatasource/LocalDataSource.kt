@@ -2,7 +2,6 @@ package com.seif.banquemisrttask.data.datasources.localdatasource
 
 import android.util.Log
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -14,17 +13,26 @@ class LocalDataSource @Inject constructor(
         return trendingRepositoriesDao.readTrendingRepositories()
     }
 
-    suspend fun insertTrendingRepositories(trendingRepositoriesEntity: TrendingRepositoriesEntity) {
-        trendingRepositoriesDao.insertTrendingRepositories(trendingRepositoriesEntity)
+    fun sortTrendingRepositoriesByName(): Flow<List<TrendingRepositoriesEntity>> {
+        return trendingRepositoriesDao.sortTrendingRepositoriesByName()
     }
 
-    suspend fun offlineCacheRepositories(trendingRepositories: TrendingRepositories) {
-        Log.d("trending", "data cached in database")
-        val trendingRepositoriesEntity = TrendingRepositoriesEntity(0, trendingRepositories)
+    fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepositoriesEntity>> {
+        return trendingRepositoriesDao.sortTrendingRepositoriesByStars()
+    }
+
+
+    suspend fun offlineCacheRepositories(trendingRepositoriesEntityList: List<TrendingRepositoriesEntity>) {
         withContext(Dispatchers.IO) {
-            insertTrendingRepositories(trendingRepositoriesEntity)
+            Log.d("trending", "cached time: ${trendingRepositoriesEntityList.last().fetchTimeStamp}")
+            insertTrendingRepositories(trendingRepositoriesEntityList)
         }
     }
+
+    private suspend fun insertTrendingRepositories(trendingRepositories: List<TrendingRepositoriesEntity>) {
+        trendingRepositoriesDao.insertTrendingRepositories(trendingRepositories)
+    }
+
 }
 
 // The withContext function is similar to coroutineScope, but it additionally allows some changes

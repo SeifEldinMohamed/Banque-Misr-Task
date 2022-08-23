@@ -9,7 +9,7 @@ class Constants {
         const val DATABASE_NAME = "repositories_database"
         const val TRENDING_REPOSITORIES_TABLE = "trending_table"
 
-        // Alarm Manager
+        // two hours in milliseconds
         const val TWO_HOURS_INTERVAL = 7200000L
     }
 }

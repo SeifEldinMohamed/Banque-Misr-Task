@@ -2,11 +2,7 @@ package com.seif.banquemisrttask.di
 
 import android.content.Context
 import androidx.room.Room
-import com.seif.banquemisrttask.data.repositoryImp.RemoteRepositoryImp
-import com.seif.banquemisrttask.data.datasources.localdatasource.LocalDataSource
 import com.seif.banquemisrttask.data.datasources.localdatasource.RepositoriesDatabase
-import com.seif.banquemisrttask.data.datasources.remotedatasource.RemoteDataSource
-import com.seif.banquemisrttask.domain.repository.RemoteRepository
 import com.seif.banquemisrttask.util.Constants.Companion.DATABASE_NAME
 import dagger.Module
 import dagger.Provides

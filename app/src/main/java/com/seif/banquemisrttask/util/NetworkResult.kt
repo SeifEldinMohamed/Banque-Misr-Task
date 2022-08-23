@@ -7,5 +7,6 @@ sealed class NetworkResult<T>( // we will use this class in viewModel to parse o
     class Success<T>(data: T) : NetworkResult<T>(data)
     class Error<T>(message: String?, data: T? = null) : NetworkResult<T>(data, message) // if error happened than data = null
 
-    class Loading<T> : NetworkResult<T>()
+    class Loading<T>(data: T? = null)  : NetworkResult<T>(data)
 }
+// (data: T? = null) : // this way we can decide if we want to display the cached data while it's loading or if we want to show an empty list

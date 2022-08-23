@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
 import com.seif.banquemisrttask.databinding.ItemTrendingRowBinding
 import com.seif.banquemisrttask.util.RepositoriesDiffUtil
@@ -12,13 +13,13 @@ import com.squareup.picasso.Picasso
 
 class TrendingRepositoriesAdapter :
     RecyclerView.Adapter<TrendingRepositoriesAdapter.MyViewHolder>() {
-    private var trendingRepositories: List<TrendingRepositoriesItem> = emptyList()
+    private var trendingRepositories: List<TrendingRepositoriesEntity> = emptyList()
     var previousExpandedPosition = -1
     var expandedPosition = -1
 
     inner class MyViewHolder(private val binding: ItemTrendingRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(trendingRepositoriesItem: TrendingRepositoriesItem, position: Int) {
+        fun bind(trendingRepositoriesItem: TrendingRepositoriesEntity, position: Int) {
             binding.tvAuthor.text = trendingRepositoriesItem.author
             binding.tvName.text = trendingRepositoriesItem.name
             binding.tvDescription.text = trendingRepositoriesItem.description
@@ -62,7 +63,7 @@ class TrendingRepositoriesAdapter :
     override fun getItemCount() = trendingRepositories.size
 
 
-    fun addTrendingRepositoriesItem(newTrendingRepositoriesItem: List<TrendingRepositoriesItem>) { // used in sorting
+    fun addTrendingRepositoriesItem(newTrendingRepositoriesItem: List<TrendingRepositoriesEntity>) { // used in sorting
         val diffUtilCallback =
             RepositoriesDiffUtil(this.trendingRepositories, newTrendingRepositoriesItem)
         val result = DiffUtil.calculateDiff(diffUtilCallback)

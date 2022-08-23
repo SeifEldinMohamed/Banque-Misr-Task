@@ -11,3 +11,26 @@
    <exclude domain="sharedpref" path="device.xml"/>
 -->
 </full-backup-content>
+
+<!--
+Auto Backup for Apps automatically backs up a user's data from apps that target and run on
+Android 6.0 (API level 23) or higher. Android preserves app data by uploading it to the
+user's Google Drive—where it's protected by the user's Google account credentials.
+The backup is end-to-end encrypted on devices running Android 9 or higher using the device's pin, pattern, or password.
+The amount of data is limited to 25MB per user of your app. There's no charge for storing backup data.
+Your app can customize the backup process or opt out by disabling backups.
+
+Files that are backed up
+By default, Auto Backup includes files in most of the directories that are assigned to your app by the system:
+
+• Shared preferences files.
+• Files saved to your app's internal storage, accessed by getFilesDir() or getDir(String, int).
+• Files in the directory returned by getDatabasePath(String), which also includes files created with the SQLiteOpenHelper class.
+• Files on external storage in the directory returned by getExternalFilesDir(String).
+• Auto Backup excludes files in directories returned by getCacheDir(), getCodeCacheDir(), and getNoBackupFilesDir().
+ The files saved in these locations are needed only temporarily, and are intentionally excluded from backup operations.
+
+ Caution: If the amount of data is over 25MB, the system calls onQuotaExceeded() and doesn't back up data to
+ the cloud. The system periodically checks whether the amount of data later falls under the 25MB
+ threshold and continues Auto Backup when it does.
+-->

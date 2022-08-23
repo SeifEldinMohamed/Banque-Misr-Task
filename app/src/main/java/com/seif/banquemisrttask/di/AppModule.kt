@@ -1,8 +1,10 @@
 package com.seif.banquemisrttask.di
 
 import android.content.Context
-import com.seif.banquemisrttask.domain.repository.LocalRepository
-import com.seif.banquemisrttask.domain.repository.RemoteRepository
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.domain.usecases.*
 import dagger.Module
 import dagger.Provides
@@ -24,33 +26,17 @@ object AppModule {
     @Singleton
     @Provides
     fun provideGetTrendingRepositoriesUseCase(
-        localRepository: LocalRepository,
-        remoteRepository: RemoteRepository
+        repository: Repository
     ): GetTrendingRepositoriesUseCase {
-        return GetTrendingRepositoriesUseCase(localRepository, remoteRepository)
+        return GetTrendingRepositoriesUseCase(repository)
     }
-
     @Singleton
     @Provides
-    fun provideShouldFetchDataUseCase(remoteRepository: RemoteRepository): ShouldFetchDataUseCase {
-        return ShouldFetchDataUseCase(remoteRepository)
+    fun checkInternetConnection (context: Context): ConnectivityManager {
+       return  context.getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+
     }
 
-    @Singleton
-    @Provides
-    fun provideReadTrendingRepositoriesUseCase(localRepository: LocalRepository): ReadTrendingRepositoriesUseCase {
-        return ReadTrendingRepositoriesUseCase(localRepository)
-    }
-
-    @Singleton
-    @Provides
-    fun provideSortTrendingRepositoriesUseCase(): SortTrendingRepositoriesUseCase {
-        return SortTrendingRepositoriesUseCase()
-    }
-
-    @Singleton
-    @Provides
-    fun provideCheckInternetConnectionUseCase(context: Context): CheckInternetConnectionUseCase {
-        return CheckInternetConnectionUseCase(context)
-    }
 }

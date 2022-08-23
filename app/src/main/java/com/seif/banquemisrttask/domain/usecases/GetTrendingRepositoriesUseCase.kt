@@ -1,22 +1,15 @@
 package com.seif.banquemisrttask.domain.usecases
 
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
-import com.seif.banquemisrttask.domain.repository.LocalRepository
-import com.seif.banquemisrttask.domain.repository.RemoteRepository
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.util.NetworkResult
+import kotlinx.coroutines.flow.Flow
 
 class GetTrendingRepositoriesUseCase(
-    private val localRepository: LocalRepository,
-    private val remoteRepository: RemoteRepository) {
-
-    suspend operator fun invoke(): NetworkResult<TrendingRepositories>? {
-        val trendingRepositories = remoteRepository.getTrendingRepositories()
-        if (trendingRepositories is NetworkResult.Success) {
-            trendingRepositories.data?.let {
-                localRepository.offlineCacheRepositories(it)
-            }
-        }
-        return trendingRepositories
+    private val repository: Repository
+) {
+     operator fun invoke(forceFetch:Boolean): Flow<NetworkResult<List<TrendingRepositoriesEntity>>> {
+        return repository.getTrendingRepositories(forceFetch)
     }
 
 }

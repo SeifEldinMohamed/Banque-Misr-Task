@@ -1,17 +1,14 @@
 package com.seif.banquemisrttask.repositories
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asFlow
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositories
+import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesResponse
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.domain.repository.RemoteRepository
 import com.seif.banquemisrttask.util.NetworkResult
-import kotlinx.coroutines.flow.Flow
+import org.apache.maven.artifact.ant.RemoteRepository
 
 
-
-class FakeTrendingRepository : RemoteRepository { // make this class to test viewModel
+class FakeTrendingRepository : RemoteRepository() { // make this class to test viewModel
     private val trendingRepositoriesItems = mutableListOf<TrendingRepositoriesEntity>()
 
     private val observeTrendingRepositoriesItem =
@@ -28,32 +25,32 @@ class FakeTrendingRepository : RemoteRepository { // make this class to test vie
     }
 
 
-    override suspend fun getTrendingRepositories(): NetworkResult<TrendingRepositories> {
-        return if(shouldReturnNetworkError){ // if we want to return an error
-            NetworkResult.Error("error")
-        }
-        else{
-            val trendingRepositoriesList = arrayListOf<TrendingRepositoriesItem>(
-                TrendingRepositoriesItem(
-                    "seif",
-                    "https://picsum.photos/seed/picsum/200/300",
-                    "hello, this seif's repository",
-                    1000,
-                    "Kotlin",
-                    "#000000",
-                    "My Kotlin Repository",
-                    2000,
-                    "https://picsum.photos/seed/picsum/200/300"
-                ))
-            val trendingRepositories = TrendingRepositories()
-            trendingRepositories.addAll(trendingRepositoriesList)
-
-            NetworkResult.Success(trendingRepositories)
-        }
-    }
-
-    override fun shouldFetchData(): Boolean {
-        return true
-    }
+//    override suspend fun getTrendingRepositories(): NetworkResult<TrendingRepositoriesResponse> {
+//        return if(shouldReturnNetworkError){ // if we want to return an error
+//            NetworkResult.Error("error")
+//        }
+//        else{
+//            val trendingRepositoriesList = arrayListOf<TrendingRepositoriesItem>(
+//                TrendingRepositoriesItem(
+//                    "seif",
+//                    "https://picsum.photos/seed/picsum/200/300",
+//                    "hello, this seif's repository",
+//                    1000,
+//                    "Kotlin",
+//                    "#000000",
+//                    "My Kotlin Repository",
+//                    2000,
+//                    "https://picsum.photos/seed/picsum/200/300"
+//                ))
+//            val trendingRepositoriesResponse = TrendingRepositoriesResponse()
+//            trendingRepositoriesResponse.addAll(trendingRepositoriesList)
+//
+//            NetworkResult.Success(trendingRepositoriesResponse)
+//        }
+//    }
+//
+//    override fun shouldFetchData(): Boolean {
+//        return true
+//    }
 
  }
