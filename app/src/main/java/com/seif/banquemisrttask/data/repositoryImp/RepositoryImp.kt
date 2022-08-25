@@ -1,8 +1,6 @@
 package com.seif.banquemisrttask.data.repositoryImp
 
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
+
 import android.util.Log
 import com.seif.banquemisrttask.data.datasources.localdatasource.LocalDataSource
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
@@ -10,13 +8,10 @@ import com.seif.banquemisrttask.data.datasources.remotedatasource.RemoteDataSour
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
 import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.domain.toTrendingRepositoriesEntityList
-import com.seif.banquemisrttask.util.CommonFunctions
 import com.seif.banquemisrttask.util.Constants
 import com.seif.banquemisrttask.util.NetworkResult
 import com.seif.banquemisrttask.util.networkBoundResource
-import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 class RepositoryImp(
     private val localDataSource: LocalDataSource,

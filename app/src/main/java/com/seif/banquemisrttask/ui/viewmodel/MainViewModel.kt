@@ -51,17 +51,6 @@ class MainViewModel @Inject constructor(
 //    }
 
 
-    // if (hasInternetConnection()) {
-
-    //  } else {
-    //      trendingRepositoriesResponse.postValue(NetworkResult.Error("No Internet Connection"))
-    //  }
-
-    // function to check internet connectivity ( returns true when internet is reliable and it will return false if not
-//    private fun hasInternetConnection(): Boolean { // network bound resource class
-//        return checkInternetConnectionUseCase()
-//    }
-
 }
 
 // A cellular network or mobile network is a type of wireless connection facilitated by cellular towers.

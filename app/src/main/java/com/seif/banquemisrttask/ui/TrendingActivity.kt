@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seif.banquemisrttask.R
@@ -21,14 +22,14 @@ import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 class TrendingActivity : AppCompatActivity() {
     private lateinit var binding: TrendingMainBinding
     private val trendingAdapter: TrendingRepositoriesAdapter by lazy { TrendingRepositoriesAdapter() }
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels()
     private var trendingRepositoriesList: ArrayList<TrendingRepositoriesEntity>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TrendingMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
@@ -58,10 +59,12 @@ class TrendingActivity : AppCompatActivity() {
                 trendingRepositoriesList = trendingList
                 showRecyclerViewAndHideShimmerEffect()
                 binding.constraintRetry.visibility = View.GONE
-            } else {
+            }
+            else {
                 observeApiData()
             }
-        } else {
+        }
+        else {
             observeApiData()
         }
     }
@@ -69,11 +72,11 @@ class TrendingActivity : AppCompatActivity() {
     private fun observeApiData() {
         // this observer triggers when ( ex: loading, success, failure)
         mainViewModel.trendingRepositoriesResponse.observe(this) {
-            handleNetworkResponse(it)
+            handleNetworkResult(it)
         }
     }
 
-    private fun handleNetworkResponse(response: NetworkResult<List<TrendingRepositoriesEntity>>) {
+    private fun handleNetworkResult(response: NetworkResult<List<TrendingRepositoriesEntity>>) {
         when (response) {
             is NetworkResult.Success -> {
                 showRecyclerViewAndHideShimmerEffect()

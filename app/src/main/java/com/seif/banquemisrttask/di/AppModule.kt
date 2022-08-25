@@ -2,8 +2,6 @@ package com.seif.banquemisrttask.di
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
 import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.domain.usecases.*
 import dagger.Module
@@ -36,7 +34,6 @@ object AppModule {
        return  context.getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
-
     }
 
 }

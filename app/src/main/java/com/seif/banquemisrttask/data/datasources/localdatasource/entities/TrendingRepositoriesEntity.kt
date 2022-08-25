@@ -3,8 +3,6 @@ package com.seif.banquemisrttask.data.datasources.localdatasource.entities
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesResponse
 import com.seif.banquemisrttask.util.Constants.Companion.TRENDING_REPOSITORIES_TABLE
 import kotlinx.parcelize.Parcelize
 
