@@ -29,7 +29,7 @@ class RepositoryImp(
             },
             saveFetchResult = {
                 Log.d("trending", "cache data in database")
-                localDataSource.offlineCacheRepositories(it.toTrendingRepositoriesEntityList())
+                localDataSource.offlineCacheRepositories(it.toTrendingRepositoriesEntityList()) // mapping to TrendingRepositoriesEntity
             },
             shouldFetch = {
                 if(it.isEmpty() || forceFetch){

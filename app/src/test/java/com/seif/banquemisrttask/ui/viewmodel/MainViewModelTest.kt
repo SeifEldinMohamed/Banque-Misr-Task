@@ -1,44 +1,59 @@
 package com.seif.banquemisrttask.ui.viewmodel
 
-import androidx.test.core.app.ApplicationProvider
+import com.google.common.truth.Truth.assertThat
+import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.domain.usecases.GetTrendingRepositoriesUseCase
+import com.seif.banquemisrttask.getOrAwaitValueTest
 import com.seif.banquemisrttask.repositories.FakeTrendingRepository
+import com.seif.banquemisrttask.util.NetworkResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
+import org.junit.Test
 
 class MainViewModelTest {
-    private lateinit var viewModel: MainViewModel
-
+    private lateinit var mainViewModel: MainViewModel
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup(){
         Dispatchers.setMain(StandardTestDispatcher())
-        viewModel = MainViewModel(FakeTrendingRepository(), ApplicationProvider.getApplicationContext())
+        mainViewModel = MainViewModel(GetTrendingRepositoriesUseCase(FakeTrendingRepository()),FakeTrendingRepository())
 
     }
     private var shouldHasInternetConnection: Boolean = true
 
-    fun setShouldReturnNetworkError(value: Boolean) {
-        shouldHasInternetConnection = value
+    private fun setShouldReturnNetworkError(value: Boolean) {
+        shouldHasInternetConnection = !value
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getTrendingRepositoriesSafeCall_HasInternetConnection(){
-
         if(shouldHasInternetConnection){
             runTest {
-                viewModel.getTrendingRepositories()
+              //  viewModel.getTrendingRepositories()
             }
         }
 
     }
 
-
-
+//    @Test
+//    fun forceFetchData_successCall_returnsListOfRepositories(){
+//
+//        mainViewModel.forceFetchingData()
+//
+//        val value = mainViewModel.trendingRepositoriesResponse.getOrAwaitValueTest()
+//
+//        assertThat(value).isEqualTo(NetworkResult.Success(null))
+//    }
+//
+//    @Test
+//    fun forceFetchData_failCall_returnsError(){
+//
+//    }
 
 
 }

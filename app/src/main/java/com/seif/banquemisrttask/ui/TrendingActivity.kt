@@ -30,7 +30,6 @@ class TrendingActivity : AppCompatActivity() {
         binding = TrendingMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
         setUpRecyclerView()

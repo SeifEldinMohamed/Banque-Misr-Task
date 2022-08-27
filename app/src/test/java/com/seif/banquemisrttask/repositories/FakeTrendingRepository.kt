@@ -1,28 +1,71 @@
 package com.seif.banquemisrttask.repositories
 
-import androidx.lifecycle.MutableLiveData
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesResponse
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.domain.repository.Repository
+import com.seif.banquemisrttask.domain.toTrendingRepositoriesEntityList
+import com.seif.banquemisrttask.util.Constants
 import com.seif.banquemisrttask.util.NetworkResult
-import org.apache.maven.artifact.ant.RemoteRepository
+import com.seif.banquemisrttask.util.networkBoundResource
+import kotlinx.coroutines.flow.*
 
+class FakeTrendingRepository(
+    var reposFromDataBase: MutableList<TrendingRepositoriesEntity> = mutableListOf(),
+    var reposFromNetwork: MutableList<TrendingRepositoriesItem> = mutableListOf(),
+) : Repository { // make this class to test viewModel
 
-class FakeTrendingRepository : RemoteRepository() { // make this class to test viewModel
-    private val trendingRepositoriesItems = mutableListOf<TrendingRepositoriesEntity>()
-
-    private val observeTrendingRepositoriesItem =
-        MutableLiveData<List<TrendingRepositoriesEntity>>(trendingRepositoriesItems)
-
-    private var shouldReturnNetworkError: Boolean = false
-
-    fun setShouldReturnNetworkError(value: Boolean) {
-        shouldReturnNetworkError = value
+    override fun getTrendingRepositories(forceFetch: Boolean): Flow<NetworkResult<List<TrendingRepositoriesEntity>>> {
+        return networkBoundResource<List<TrendingRepositoriesEntity>, List<TrendingRepositoriesItem>>(
+            query = {
+                flow { emit(reposFromDataBase) }
+            },
+            fetch = {
+                 reposFromNetwork
+            },
+            saveFetchResult = {
+                reposFromDataBase.addAll(it.toTrendingRepositoriesEntityList())
+            },
+            shouldFetch = {
+                if(it.isEmpty() || forceFetch){
+                    true
+                }
+                else{
+                    it.last().fetchTimeStamp + Constants.TWO_HOURS_INTERVAL < System.currentTimeMillis()
+                }
+            }
+        )
     }
 
-    private fun refreshLifeData() {
-        observeTrendingRepositoriesItem.postValue(trendingRepositoriesItems)
+    override fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepositoriesEntity>> {
+        reposFromDataBase.sortBy {
+            it.stars
+        }
+        return flow { emit(reposFromDataBase) }
     }
+
+    override fun sortTrendingRepositoriesByName(): Flow<List<TrendingRepositoriesEntity>> {
+        reposFromDataBase.sortBy {
+            it.name
+        }
+        return flow { emit(reposFromDataBase) }
+    }
+
+}
+
+// //    private val trendingRepositoriesItems = mutableListOf<TrendingRepositoriesEntity>()
+////
+////    private val observeTrendingRepositoriesItem =
+////        MutableLiveData<List<TrendingRepositoriesEntity>>(trendingRepositoriesItems)
+//
+////    private var shouldReturnNetworkError: Boolean = false
+////
+////    fun setShouldReturnNetworkError(value: Boolean) {
+////        shouldReturnNetworkError = value
+////    }
+////
+////    private fun refreshLifeData() {
+////        observeTrendingRepositoriesItem.postValue(trendingRepositoriesItems)
+////    }
 
 
 //    override suspend fun getTrendingRepositories(): NetworkResult<TrendingRepositoriesResponse> {
@@ -52,5 +95,3 @@ class FakeTrendingRepository : RemoteRepository() { // make this class to test v
 //    override fun shouldFetchData(): Boolean {
 //        return true
 //    }
-
- }

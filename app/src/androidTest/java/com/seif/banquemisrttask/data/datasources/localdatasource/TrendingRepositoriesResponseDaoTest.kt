@@ -18,10 +18,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-// we make sure that all tests inside this class will run on the emulator and tell jUnit that this is instrumented tests
-@HiltAndroidTest
-// // to tell junit that we write here unit tests
-@SmallTest
+@HiltAndroidTest // we make sure that all tests inside this class will run on the emulator and tell jUnit that this is instrumented tests
+@SmallTest // to tell junit that we write here unit tests
 class TrendingRepositoriesResponseDaoTest {
 
     @get:Rule

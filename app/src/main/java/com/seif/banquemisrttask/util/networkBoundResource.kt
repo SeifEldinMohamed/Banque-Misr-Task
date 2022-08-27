@@ -31,7 +31,6 @@ inline fun <ResultType, RequestType> networkBoundResource( // we use this type a
             query().map { NetworkResult.Error("No Internet Connection", it) }
         }
     } else { // get cached data from database
-        Log.d("trending", "read from database inside resource bound function")
         query().map { NetworkResult.Success(it) } //  // to convert Flow<List<TrendingRepositoriesEntity>> to Flow<NetworkResult<List<TrendingRepositoriesEntity>>>
     }
 
