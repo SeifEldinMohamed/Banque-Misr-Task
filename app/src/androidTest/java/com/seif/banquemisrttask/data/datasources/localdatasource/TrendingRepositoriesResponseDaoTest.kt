@@ -6,93 +6,79 @@ import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.getOrAwaitValueTest
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesResponse
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.Rule
 import javax.inject.Inject
 import javax.inject.Named
 
-
-@HiltAndroidTest // we make sure that all tests inside this class will run on the emulator and tell jUnit that this is instrumented tests
-@SmallTest // to tell junit that we write here unit tests
+@ExperimentalCoroutinesApi
+@HiltAndroidTest // Annotation used for marking an Android emulator tests that require injection.
 class TrendingRepositoriesResponseDaoTest {
 
-    @get:Rule
+    @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
+    @get:Rule(order = 1)
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     //  private lateinit var database: RepositoriesDatabase
     @Inject
     @Named("test_db")
     lateinit var database: RepositoriesDatabase
+
     private lateinit var dao: TrendingRepositoriesDao
 
     @Before
     fun setUp() {
-       hiltRule.inject()
+        hiltRule.inject()
         dao = database.trendingRepositoriesDao()
     }
 
-    @Before
+    @After
     fun tearDown() {
         database.close()
     }
 
     @Test
     fun insertShoppingItem() = runBlocking {
-        val trendingRepositoriesList = arrayListOf<TrendingRepositoriesItem>(
-            TrendingRepositoriesItem(
-                "seif",
-                "https://picsum.photos/seed/picsum/200/300",
-                "hello, this seif's repository",
-                1000,
-                "Kotlin",
-                "#000000",
-                "My Kotlin Repository",
-                2000,
-                "https://picsum.photos/seed/picsum/200/300"
-            ),
-            TrendingRepositoriesItem(
-                "mohamed",
-                "https://picsum.photos/seed/picsum/200/300",
-                "hello, this mohamed's repository",
-                1000,
-                "Java",
-                "#000000",
-                "My Java Repository",
-                2000,
-                "https://picsum.photos/seed/picsum/200/300"
-            ),
-            TrendingRepositoriesItem(
-                "Ahmed",
-                "https://picsum.photos/seed/picsum/200/300",
-                "hello, this ahmed's repository",
-                1000,
-                "C++",
-                "#000000",
-                "My C++ Repository",
-                2000,
-                "https://picsum.photos/seed/picsum/200/300"
-            )
-        )
-//        val trendingRepositoriesResponse = TrendingRepositoriesResponse()
-//        trendingRepositoriesResponse.addAll(trendingRepositoriesList)
-//        val trendingRepositoriesEntity = TrendingRepositoriesEntity(1, trendingRepositoriesResponse)
-//
-//        dao.insertTrendingRepositories(trendingRepositoriesEntity)
-//
-//        val trendingDataList: List<TrendingRepositoriesEntity> =
-//            dao.readTrendingRepositories().asLiveData().getOrAwaitValueTest()
-//
-//        assertThat(trendingDataList[0].trendingRepositoriesResponse).isEqualTo(trendingRepositoriesResponse)
+        val repos: List<TrendingRepositoriesEntity> = createReposFromDataBase()
+        dao.insertTrendingRepositories(repos)
+
+        val trendingDataList: List<TrendingRepositoriesEntity> =
+            dao.readTrendingRepositories().asLiveData().getOrAwaitValueTest()
+
+        assertThat(trendingDataList).isEqualTo(repos)
     }
+
+    private fun createReposFromDataBase(lastFetchTime: Long = System.currentTimeMillis()): MutableList<TrendingRepositoriesEntity> {
+        val repos = mutableListOf<TrendingRepositoriesEntity>()
+        ('a'..'d').forEachIndexed { index, c ->
+            repos.add(
+                TrendingRepositoriesEntity(
+                    index,
+                    c.toString(),
+                    c.toString(),
+                    c.toString(),
+                    index,
+                    c.toString(),
+                    c.toString(),
+                    c.toString(),
+                    index,
+                    c.toString(),
+                    lastFetchTime// 7:00 pm
+                )
+            )
+        }
+        return repos
+    }
+
 }
 
 // the difference bet Room.inMemoryDatabaseBuilder() and Room.databaseBuilder() is that inMemoryDatabaseBuilder()

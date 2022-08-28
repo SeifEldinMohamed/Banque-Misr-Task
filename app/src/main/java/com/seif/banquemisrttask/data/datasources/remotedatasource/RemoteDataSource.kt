@@ -17,6 +17,8 @@ class RemoteDataSource @Inject constructor(
          return emptyList()
     }
 
+}
+
 //    private fun handleTrendingRepositoriesResponse(response: Response<TrendingRepositoriesResponse>): NetworkResult<TrendingRepositoriesResponse>? {
 //        return when {
 //            response.message().toString().contains("timeout") -> NetworkResult.Error("Timeout")
@@ -32,5 +34,3 @@ class RemoteDataSource @Inject constructor(
 //            else -> NetworkResult.Error(response.message())
 //        }
 //    }
-
-}

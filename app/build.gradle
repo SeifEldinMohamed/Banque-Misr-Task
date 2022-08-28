@@ -16,8 +16,8 @@ android {
         versionCode 1
         versionName "1.0"
 
-       // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunner "com.seif.banquemisrttask.HiltTestRunner"
+        // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.seif.banquemisrttask.TestHiltRunner"
     }
 
     buildTypes {
@@ -113,7 +113,7 @@ dependencies {
     androidTestImplementation "com.google.truth:truth:1.0.1"
     androidTestImplementation "org.mockito:mockito-core:3.11.2"
 
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.28-alpha'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.38.1'
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.38.1'
 
     // debugImplementation because LeakCanary should only run in debug builds.

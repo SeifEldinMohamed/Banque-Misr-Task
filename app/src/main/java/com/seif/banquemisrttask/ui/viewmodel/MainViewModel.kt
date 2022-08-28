@@ -26,10 +26,20 @@ class MainViewModel @Inject constructor(
         repository.sortTrendingRepositoriesByStars().asLiveData()
     }
 
-
     fun forceFetchingData() {
         trendingRepositoriesResponse = getTrendingRepositoriesUseCase(true).asLiveData()
     }
+
+}
+
+// A cellular network or mobile network is a type of wireless connection facilitated by cellular towers.
+// To have access to the cellular network, your mobile devices will have to be connected through a cellular provider
+
+// ethernet is used to connect devices within a local area network (LAN). It’s a much smaller connection system than the internet.
+
+// WiFi is capable of doing most of this wirelessly, which is more convenient, but slower.
+
+// 2 hours = 7200000 milliseconds
 
 
 //    fun getTrendingRepositories() {
@@ -49,15 +59,3 @@ class MainViewModel @Inject constructor(
 //        }
 //
 //    }
-
-
-}
-
-// A cellular network or mobile network is a type of wireless connection facilitated by cellular towers.
-// To have access to the cellular network, your mobile devices will have to be connected through a cellular provider
-
-// ethernet is used to connect devices within a local area network (LAN). It’s a much smaller connection system than the internet.
-
-// WiFi is capable of doing most of this wirelessly, which is more convenient, but slower.
-
-// 2 hours = 7200000 milliseconds

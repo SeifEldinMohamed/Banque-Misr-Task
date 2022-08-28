@@ -1,5 +1,6 @@
 package com.seif.banquemisrttask.di
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.seif.banquemisrttask.data.datasources.localdatasource.RepositoriesDatabase
@@ -16,8 +17,10 @@ object TestAppModule {
 
     @Provides
     @Named("test_db")
-    fun provideInMemoryDb(@ApplicationContext context: Context) =
-        Room.inMemoryDatabaseBuilder(context, RepositoriesDatabase::class.java)
-            .allowMainThreadQueries()
+    fun provideInMemoryDb( @ApplicationContext context: Context) : RepositoriesDatabase {
+       return Room.inMemoryDatabaseBuilder(context, RepositoriesDatabase::class.java)
+            .allowMainThreadQueries() // Disables the main thread query check for Room.
             .build()
+    }
+
 }

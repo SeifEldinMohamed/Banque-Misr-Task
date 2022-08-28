@@ -1,5 +1,6 @@
 package com.seif.banquemisrttask.di
 
+import android.net.ConnectivityManager
 import com.seif.banquemisrttask.data.datasources.localdatasource.LocalDataSource
 import com.seif.banquemisrttask.data.datasources.remotedatasource.RemoteDataSource
 import com.seif.banquemisrttask.data.repositoryImp.RepositoryImp
@@ -17,7 +18,8 @@ object RepositoryModule {
     @Provides
     fun provideRepository( // since we pass a ShoppingRepository Interface in our ViewModel Constructor dagger will look if we provide such an interface
         localDataSource: LocalDataSource,
-        remoteDataSource: RemoteDataSource
-    ) = RepositoryImp(localDataSource,remoteDataSource) as Repository
+        remoteDataSource: RemoteDataSource,
+        checkInternetConnection:ConnectivityManager
+    ) = RepositoryImp(localDataSource,remoteDataSource, checkInternetConnection) as Repository
 
 }

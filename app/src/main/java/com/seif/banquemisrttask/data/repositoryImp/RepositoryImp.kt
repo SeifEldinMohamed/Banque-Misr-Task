@@ -1,6 +1,7 @@
 package com.seif.banquemisrttask.data.repositoryImp
 
 
+import android.net.ConnectivityManager
 import android.util.Log
 import com.seif.banquemisrttask.data.datasources.localdatasource.LocalDataSource
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
@@ -8,17 +9,18 @@ import com.seif.banquemisrttask.data.datasources.remotedatasource.RemoteDataSour
 import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
 import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.domain.toTrendingRepositoriesEntityList
-import com.seif.banquemisrttask.util.Constants
-import com.seif.banquemisrttask.util.NetworkResult
-import com.seif.banquemisrttask.util.networkBoundResource
+import com.seif.banquemisrttask.util.*
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class RepositoryImp(
+class RepositoryImp @Inject constructor(
     private val localDataSource: LocalDataSource,
-    private val remoteDataSource: RemoteDataSource
+    private val remoteDataSource: RemoteDataSource,
+    private val connectivityManager:ConnectivityManager
 ) : Repository {
 
     override fun getTrendingRepositories(forceFetch:Boolean): Flow<NetworkResult<List<TrendingRepositoriesEntity>>> {
+
         return networkBoundResource<List<TrendingRepositoriesEntity>, List<TrendingRepositoriesItem>>( // first: RequestType, second: ResultType
             query = {
                 localDataSource.readTrendingRepositories()
@@ -39,10 +41,12 @@ class RepositoryImp(
                     Log.d("trending", "should fetch ${it.last().fetchTimeStamp + Constants.TWO_HOURS_INTERVAL <= System.currentTimeMillis()}")
                     it.last().fetchTimeStamp + Constants.TWO_HOURS_INTERVAL < System.currentTimeMillis()
                 }
-            }
+            },
+           hasInternetConnection = {
+               CommonFunctions.checkInternetConnection(connectivityManager)
+           }
         )
     }
-
 
     override fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepositoriesEntity>> {
         return localDataSource.sortTrendingRepositoriesByStars()
