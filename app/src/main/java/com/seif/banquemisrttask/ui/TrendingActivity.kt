@@ -19,7 +19,9 @@ import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
 
 @AndroidEntryPoint
 class TrendingActivity : AppCompatActivity() {
-    private lateinit var binding: TrendingMainBinding
+    private var _binding: TrendingMainBinding? = null
+    private val binding get() = _binding!!
+
     private val trendingAdapter: TrendingRepositoriesAdapter by lazy { TrendingRepositoriesAdapter() }
     private val mainViewModel: MainViewModel by viewModels()
     private var trendingRepositoriesList: ArrayList<TrendingRepositoriesEntity>? = null
@@ -29,7 +31,8 @@ class TrendingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = TrendingMainBinding.inflate(layoutInflater)
+        _binding = TrendingMainBinding.inflate(layoutInflater)
+        // binding.lifecycleOwner = this // bec we will use live data objects in our xml
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
@@ -216,6 +219,11 @@ class TrendingActivity : AppCompatActivity() {
             binding.rvTrending.scrollToPosition(0)
             trendingRepositoriesList = it.toCollection(ArrayList())
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null // to avoid memory leaks
     }
 
 }

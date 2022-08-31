@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.databinding.ItemTrendingRowBinding
 import com.seif.banquemisrttask.util.RepositoriesDiffUtil
-import com.squareup.picasso.Picasso
-import kotlinx.coroutines.withContext
+
 
 class TrendingRepositoriesAdapter :
     RecyclerView.Adapter<TrendingRepositoriesAdapter.MyViewHolder>() {
@@ -25,15 +24,8 @@ class TrendingRepositoriesAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(trendingRepositoriesEntity: TrendingRepositoriesEntity, position: Int) {
-            binding.tvAuthor.text = trendingRepositoriesEntity.author
-            binding.tvName.text = trendingRepositoriesEntity.name
-            binding.tvDescription.text = trendingRepositoriesEntity.description
-            binding.tvLanguage.text = trendingRepositoriesEntity.language
-            binding.tvStars.text = trendingRepositoriesEntity.stars.toString()
-            binding.tvFork.text = trendingRepositoriesEntity.forks.toString()
-//                binding.cvBullet.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, trendingRepositoriesItem.languageColor.toInt()))
-//                binding.cvBullet.setBackgroundColor(Color.parseColor(trendingRepositoriesItem.languageColor))
-            Picasso.get().load(trendingRepositoriesEntity.avatar).into(binding.ivAvatar)
+            binding.trendingRepositoriesEntity = trendingRepositoriesEntity
+            binding.executePendingBindings()
 
             val isExpanded = (position == expandedPosition) // to make all items closed at first
             binding.expandableConstraintLayout.visibility = if (isExpanded) View.VISIBLE else View.GONE
