@@ -5,7 +5,7 @@ import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.util.NetworkResult
 import kotlinx.coroutines.flow.Flow
 
-class GetTrendingRepositoriesUseCase(
+class GetTrendingRepositoriesUseCase (
     private val repository: Repository
 ) {
      operator fun invoke(forceFetch:Boolean): Flow<NetworkResult<List<TrendingRepositoriesEntity>>> {

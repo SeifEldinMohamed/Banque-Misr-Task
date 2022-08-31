@@ -18,7 +18,8 @@ import com.seif.banquemisrttask.data.datasources.remotedatasource.models.Trendin
                 element.name,
                 element.stars,
                 element.url,
-                System.currentTimeMillis()
+                System.currentTimeMillis(),
+                false
             )
         )
     }

@@ -20,5 +20,6 @@ data class TrendingRepositoriesEntity(
     val name: String,
     val stars: Int,
     val url: String,
-    val fetchTimeStamp: Long
+    val fetchTimeStamp: Long,
+    val isExpanded:Boolean
 ): Parcelable

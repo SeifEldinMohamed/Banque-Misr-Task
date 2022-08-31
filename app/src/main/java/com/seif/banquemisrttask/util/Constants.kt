@@ -4,7 +4,7 @@ class Constants {
     companion object {
         // retrofit
         const val BASE_URL = "https://api.github.com/"
-
+        // encapsulate base url in c++ file
         // ROOM
         const val DATABASE_NAME = "repositories_database"
         const val TRENDING_REPOSITORIES_TABLE = "trending_table"

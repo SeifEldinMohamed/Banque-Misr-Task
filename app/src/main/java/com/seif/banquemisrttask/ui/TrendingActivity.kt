@@ -23,6 +23,8 @@ class TrendingActivity : AppCompatActivity() {
     private val trendingAdapter: TrendingRepositoriesAdapter by lazy { TrendingRepositoriesAdapter() }
     private val mainViewModel: MainViewModel by viewModels()
     private var trendingRepositoriesList: ArrayList<TrendingRepositoriesEntity>? = null
+    private var expandedSavedInstanceItemPosition: Int? = null
+    private var isErrorState: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,25 +49,53 @@ class TrendingActivity : AppCompatActivity() {
             observeApiData()
             binding.swiptToRefresh.isRefreshing = false
         }
+
+        trendingAdapter.expandedPositionMutableLiveData.observe(this) {
+            it?.let { position ->
+                Log.d("rotate", "observe: $position")
+                expandedSavedInstanceItemPosition = position
+            }
+        }
     }
 
     private fun handleConfigurationChanges(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             val trendingList =
                 savedInstanceState.getParcelableArrayList<TrendingRepositoriesEntity>("trendingList")
-            if (trendingList != null) {
-                trendingAdapter.addTrendingRepositoriesItem(trendingList)
-                trendingRepositoriesList = trendingList
+            val expandedPosition = savedInstanceState.getInt("expandedPosition")
+            val isError = savedInstanceState.getBoolean("isErrorState")
+            Log.d("rotate", "savedInstance: $expandedPosition")
+            handleTrendingList(trendingList, expandedPosition, isError)
+        } else {
+            observeApiData()
+        }
+    }
+
+    private fun handleTrendingList(
+        trendingList: ArrayList<TrendingRepositoriesEntity>?,
+        expandedPosition: Int,
+        isError: Boolean
+    ) {
+        trendingList?.let {
+            if (isError) {
+                showRetryAndHideShimmerEffectAndRecyclerView()
+                isErrorState = true
+            } else {
+                trendingAdapter.addTrendingRepositoriesItem(it)
+                trendingAdapter.expandSavedInstanceItem(expandedPosition) // to expand saved item as before configuration change
+
+                // to handle save new state and use it if user change configuration again
+                trendingRepositoriesList = it
+                expandedSavedInstanceItemPosition = expandedPosition
+                isErrorState = false
+
                 showRecyclerViewAndHideShimmerEffect()
                 binding.constraintRetry.visibility = View.GONE
             }
-            else {
-                observeApiData()
-            }
+            return
         }
-        else {
-            observeApiData()
-        }
+
+        observeApiData()
     }
 
     private fun observeApiData() {
@@ -83,12 +113,17 @@ class TrendingActivity : AppCompatActivity() {
 
                 response.data?.let {
                     trendingAdapter.addTrendingRepositoriesItem(it)
+                    trendingAdapter.resetExpandingHandlers()
+
                     trendingRepositoriesList = it.toCollection(ArrayList())
-                    binding.rvTrending.scrollToPosition(0)
+                    isErrorState = false
+                    // binding.rvTrending.scrollToPosition(0)
                 }
             }
             is NetworkResult.Error -> {
                 showRetryAndHideShimmerEffectAndRecyclerView()
+                //  trendingRepositoriesList = ArrayList() // empty list when error occurred
+                isErrorState = true
                 Log.d("trending", "Error : ${response.message}")
             }
             is NetworkResult.Loading -> {
@@ -102,8 +137,12 @@ class TrendingActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         trendingRepositoriesList?.let {
-            outState.putParcelableArrayList("trendingList", trendingRepositoriesList)
+            outState.putParcelableArrayList("trendingList", it)
         }
+        expandedSavedInstanceItemPosition?.let {
+            outState.putInt("expandedPosition", it)
+        }
+        outState.putBoolean("isErrorState", isErrorState)
     }
 
     private fun setUpRecyclerView() {
@@ -150,10 +189,12 @@ class TrendingActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_sort_by_name -> {
-                observeSortedReposByNameList()
+                if (!isErrorState)
+                    observeSortedReposByNameList()
             }
             R.id.menu_sort_by_stars -> {
-                observeSortedReposByStarsList()
+                if (!isErrorState)
+                    observeSortedReposByStarsList()
             }
         }
         return true
@@ -162,6 +203,7 @@ class TrendingActivity : AppCompatActivity() {
     private fun observeSortedReposByNameList() {
         mainViewModel.sortReposByName.observe(this) {
             trendingAdapter.addTrendingRepositoriesItem(it)
+            trendingAdapter.resetExpandingHandlers() // to close expanded item if found
             binding.rvTrending.scrollToPosition(0)
             trendingRepositoriesList = it.toCollection(ArrayList())
         }
@@ -170,6 +212,7 @@ class TrendingActivity : AppCompatActivity() {
     private fun observeSortedReposByStarsList() {
         mainViewModel.sortReposByStars.observe(this) {
             trendingAdapter.addTrendingRepositoriesItem(it)
+            trendingAdapter.resetExpandingHandlers() // to close expanded item if found
             binding.rvTrending.scrollToPosition(0)
             trendingRepositoriesList = it.toCollection(ArrayList())
         }
