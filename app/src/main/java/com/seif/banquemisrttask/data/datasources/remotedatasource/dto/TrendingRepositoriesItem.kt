@@ -1,4 +1,4 @@
-package com.seif.banquemisrttask.data.datasources.remotedatasource.models
+package com.seif.banquemisrttask.data.datasources.remotedatasource.dto
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

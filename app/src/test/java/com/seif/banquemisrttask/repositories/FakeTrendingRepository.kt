@@ -1,9 +1,11 @@
 package com.seif.banquemisrttask.repositories
 
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.data.datasources.remotedatasource.dto.TrendingRepositoriesItem
+import com.seif.banquemisrttask.domain.model.TrendingRepository
 import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.domain.toTrendingRepositoriesEntityList
+import com.seif.banquemisrttask.domain.toTrendingRepository
 import com.seif.banquemisrttask.util.Constants
 import com.seif.banquemisrttask.util.NetworkResult
 import com.seif.banquemisrttask.util.networkBoundResource
@@ -14,10 +16,13 @@ class FakeTrendingRepository(
     private var reposFromNetwork: MutableList<TrendingRepositoriesItem> = mutableListOf(),
 ) : Repository { // make this class to test viewModel
 
-    override fun getTrendingRepositories(forceFetch: Boolean): Flow<NetworkResult<List<TrendingRepositoriesEntity>>> {
-        return networkBoundResource<List<TrendingRepositoriesEntity>, List<TrendingRepositoriesItem>>(
+    override fun getTrendingRepositories(forceFetch: Boolean): Flow<NetworkResult<List<TrendingRepository>>> {
+        return networkBoundResource<List<TrendingRepository>, List<TrendingRepositoriesItem>>(
             query = {
-                flow { emit(reposFromDataBase) }
+                flow {
+                    val reposEntity = reposFromDataBase
+                    emit(reposEntity.toTrendingRepository())
+                }
             },
             fetch = {
                  reposFromNetwork

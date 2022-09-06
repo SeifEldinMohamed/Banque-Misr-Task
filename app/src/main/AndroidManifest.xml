@@ -5,7 +5,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:usesCleartextTraffic="true"
         android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,13 +19,19 @@
         android:theme="@style/Theme.BanqueMisrtTask"
         tools:targetApi="s">
         <activity
-            android:name=".ui.TrendingActivity"
-            android:exported="true">
+            android:name=".ui.compose.MainActivityCompose"
+            android:exported="true"
+            android:theme="@style/Theme.BanqueMisrtTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.TrendingActivity"
+            android:exported="true">
+
         </activity>
     </application>
 

@@ -103,9 +103,9 @@ class TrendingActivity : AppCompatActivity() {
 
     private fun observeApiData() {
         // this observer triggers when ( ex: loading, success, failure)
-        mainViewModel.trendingRepositoriesResponse.observe(this) {
-            handleNetworkResult(it)
-        }
+//        mainViewModel.trendingRepositoriesResponse.observe(this) {
+//            handleNetworkResult(it)
+//        }
     }
 
     private fun handleNetworkResult(response: NetworkResult<List<TrendingRepositoriesEntity>>) {

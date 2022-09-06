@@ -1,9 +1,11 @@
 package com.seif.banquemisrttask.domain
 
+import androidx.compose.runtime.mutableStateOf
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.data.datasources.remotedatasource.dto.TrendingRepositoriesItem
+import com.seif.banquemisrttask.domain.model.TrendingRepository
 
- fun List<TrendingRepositoriesItem>.toTrendingRepositoriesEntityList(): List<TrendingRepositoriesEntity> {
+fun List<TrendingRepositoriesItem>.toTrendingRepositoriesEntityList(): List<TrendingRepositoriesEntity> {
     val list = ArrayList<TrendingRepositoriesEntity>()
     this.forEachIndexed { index, element->
         list.add(
@@ -24,4 +26,23 @@ import com.seif.banquemisrttask.data.datasources.remotedatasource.models.Trendin
         )
     }
     return list
+}
+
+fun List<TrendingRepositoriesEntity>.toTrendingRepository(): List<TrendingRepository> {
+    return this.map {
+        TrendingRepository(
+            it.id,
+            it.author ?: "Seif Mohamed",
+            it.avatar?: "https://picsum.photos/seed/picsum/200/300",
+            it.description?: "",
+            it.forks,
+            it.language?: "Kotlin",
+            it.languageColor?: "#0000FF",
+            it.name,
+            it.stars,
+            it.url,
+            it.fetchTimeStamp,
+            mutableStateOf(false)
+        )
+    }
 }

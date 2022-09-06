@@ -6,24 +6,29 @@ import android.util.Log
 import com.seif.banquemisrttask.data.datasources.localdatasource.LocalDataSource
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.datasources.remotedatasource.RemoteDataSource
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.data.datasources.remotedatasource.dto.TrendingRepositoriesItem
+import com.seif.banquemisrttask.domain.model.TrendingRepository
 import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.domain.toTrendingRepositoriesEntityList
+import com.seif.banquemisrttask.domain.toTrendingRepository
 import com.seif.banquemisrttask.util.*
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class RepositoryImp @Inject constructor(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val connectivityManager:ConnectivityManager
+    private val connectivityManager: ConnectivityManager
 ) : Repository {
 
-    override fun getTrendingRepositories(forceFetch:Boolean): Flow<NetworkResult<List<TrendingRepositoriesEntity>>> {
-
-        return networkBoundResource<List<TrendingRepositoriesEntity>, List<TrendingRepositoriesItem>>( // first: RequestType, second: ResultType
+    override fun getTrendingRepositories(forceFetch: Boolean): Flow<NetworkResult<List<TrendingRepository>>> {
+        return networkBoundResource<List<TrendingRepository>, List<TrendingRepositoriesItem>>( // first: RequestType, second: ResultType
             query = {
-                localDataSource.readTrendingRepositories()
+               // flowOf(localDataSource.readTrendingRepositories().toTrendingRepository())
+                    flow {
+                        val reposEntity = localDataSource.readTrendingRepositories().first()
+                        emit(reposEntity.toTrendingRepository())
+                    }
             },
             fetch = {
                 Log.d("trending", "fetch from api")
@@ -34,18 +39,21 @@ class RepositoryImp @Inject constructor(
                 localDataSource.offlineCacheRepositories(it.toTrendingRepositoriesEntityList()) // mapping to TrendingRepositoriesEntity
             },
             shouldFetch = {
-                if(it.isEmpty() || forceFetch){
+                if (it.isEmpty() || forceFetch) {
                     true
-                }
-                else{
-                    Log.d("trending", "should fetch ${it.last().fetchTimeStamp + Constants.TWO_HOURS_INTERVAL <= System.currentTimeMillis()}")
+                } else {
+                    Log.d(
+                        "trending",
+                        "should fetch ${it.last().fetchTimeStamp + Constants.TWO_HOURS_INTERVAL <= System.currentTimeMillis()}"
+                    )
                     it.last().fetchTimeStamp + Constants.TWO_HOURS_INTERVAL < System.currentTimeMillis()
                 }
             },
-           hasInternetConnection = {
-               CommonFunctions.checkInternetConnection(connectivityManager)
-           }
+            hasInternetConnection = {
+                CommonFunctions.checkInternetConnection(connectivityManager)
+            }
         )
+
     }
 
     override fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepositoriesEntity>> {

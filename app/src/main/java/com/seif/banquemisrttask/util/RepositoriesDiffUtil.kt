@@ -2,7 +2,6 @@ package com.seif.banquemisrttask.util
 
 import androidx.recyclerview.widget.DiffUtil
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
 
 class RepositoriesDiffUtil(
     private val oldList: List<TrendingRepositoriesEntity>,

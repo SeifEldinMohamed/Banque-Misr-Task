@@ -17,4 +17,5 @@
     <string name="an_alien_is_probably_blocking_your_signal">An alien is probably blocking your signal.</string>
     <string name="no_internet_connection_image_description">no internet connection image description</string>
     <string name="retry">Retry</string>
+    <string name="title_activity_main_compose">MainActivityCompose</string>
 </resources>

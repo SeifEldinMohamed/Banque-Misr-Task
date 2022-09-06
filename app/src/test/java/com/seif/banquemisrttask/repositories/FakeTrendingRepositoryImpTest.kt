@@ -1,8 +1,9 @@
 package com.seif.banquemisrttask.repositories
 
+import androidx.compose.runtime.mutableStateOf
 import com.google.common.truth.Truth.assertThat
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
-import com.seif.banquemisrttask.data.datasources.remotedatasource.models.TrendingRepositoriesItem
+import com.seif.banquemisrttask.data.datasources.remotedatasource.dto.TrendingRepositoriesItem
 import com.seif.banquemisrttask.domain.usecases.GetTrendingRepositoriesUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -76,7 +77,8 @@ class FakeTrendingRepositoryImpTest {
                     c.toString(),
                     index,
                     c.toString(),
-                    lastFetchTime// 7:00 pm
+                    lastFetchTime, // 7:00 pm
+                    false
                 )
             )
         }

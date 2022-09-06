@@ -15,8 +15,8 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() { // since we will need an application reference, so we will use AndroidViewModel
 
     /** Retrofit **/
-    var trendingRepositoriesResponse: LiveData<NetworkResult<List<TrendingRepositoriesEntity>>> =
-        getTrendingRepositoriesUseCase(false).asLiveData()
+   // var trendingRepositoriesResponse: LiveData<NetworkResult<List<TrendingRepositoriesEntity>>> =
+   //     getTrendingRepositoriesUseCase(false).asLiveData()
 
     /** Sorting **/
     val sortReposByName: LiveData<List<TrendingRepositoriesEntity>> by lazy {
@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun forceFetchingData() {
-        trendingRepositoriesResponse = getTrendingRepositoriesUseCase(true).asLiveData()
+      //  trendingRepositoriesResponse = getTrendingRepositoriesUseCase(true).asLiveData()
     }
 
 }
