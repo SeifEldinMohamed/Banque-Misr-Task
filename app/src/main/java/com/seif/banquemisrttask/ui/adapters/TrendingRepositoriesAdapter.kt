@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.databinding.ItemTrendingRowBinding
+import com.seif.banquemisrttask.domain.model.TrendingRepository
 import com.seif.banquemisrttask.util.RepositoriesDiffUtil
 
 
 class TrendingRepositoriesAdapter :
     RecyclerView.Adapter<TrendingRepositoriesAdapter.MyViewHolder>() {
-    private var trendingRepositories: List<TrendingRepositoriesEntity> = emptyList()
+    private var trendingRepositories: List<TrendingRepository> = emptyList()
     var previousExpandedPosition = -1
     var expandedPosition = -1
     val expandedPositionMutableLiveData: MutableLiveData<Int> by lazy {
@@ -23,8 +23,8 @@ class TrendingRepositoriesAdapter :
     inner class MyViewHolder(private val binding: ItemTrendingRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(trendingRepositoriesEntity: TrendingRepositoriesEntity, position: Int) {
-            binding.trendingRepositoriesEntity = trendingRepositoriesEntity
+        fun bind(trendingRepositories: TrendingRepository, position: Int) {
+            binding.trendingRepository = trendingRepositories
             binding.executePendingBindings()
 
             val isExpanded = (position == expandedPosition) // to make all items closed at first
@@ -60,7 +60,7 @@ class TrendingRepositoriesAdapter :
     override fun getItemCount() = trendingRepositories.size
 
 
-    fun addTrendingRepositoriesItem(newTrendingRepositoriesItem: List<TrendingRepositoriesEntity>) { // used in sorting
+    fun addTrendingRepositoriesItem(newTrendingRepositoriesItem: List<TrendingRepository>) { // used in sorting
         val diffUtilCallback =
             RepositoriesDiffUtil(this.trendingRepositories, newTrendingRepositoriesItem)
         val result = DiffUtil.calculateDiff(diffUtilCallback)

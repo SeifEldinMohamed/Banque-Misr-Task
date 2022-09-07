@@ -2,10 +2,11 @@ package com.seif.banquemisrttask.util
 
 import androidx.recyclerview.widget.DiffUtil
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.domain.model.TrendingRepository
 
 class RepositoriesDiffUtil(
-    private val oldList: List<TrendingRepositoriesEntity>,
-    private val newList: List<TrendingRepositoriesEntity>,
+    private val oldList: List<TrendingRepository>,
+    private val newList: List<TrendingRepository>,
 ): DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size

@@ -16,9 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.seif.banquemisrttask.ui.compose.HomeViewModel
+import com.seif.banquemisrttask.ui.viewmodel.MainViewModel
 
 @Composable
-fun OptionMenu() {
+fun OptionMenu(
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
     var showMenu by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -44,14 +49,16 @@ fun OptionMenu() {
                 onDismissRequest = { showMenu = false }
             ) {
                 DropdownMenuItem(onClick = {
-                    Toast.makeText(context, "sorting by name", Toast.LENGTH_SHORT).show()
+                    if (homeViewModel.state.value.error.isBlank()) // when we are not in error state
+                        homeViewModel.sortReposByName()
                     showMenu = false
                 }
                 ) {
                     Text(text = "Sort By Name", Modifier.padding(horizontal = 10.dp))
                 }
                 DropdownMenuItem(onClick = {
-                    Toast.makeText(context, "sorting by stars", Toast.LENGTH_SHORT).show()
+                    if (homeViewModel.state.value.error.isBlank()) // when we are not in error state
+                    homeViewModel.sortReposBStars()
                     showMenu = false
                 }) {
                     Text(text = "Sort By Stars", Modifier.padding(horizontal = 10.dp))

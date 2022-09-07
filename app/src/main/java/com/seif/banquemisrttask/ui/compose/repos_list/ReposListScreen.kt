@@ -57,6 +57,18 @@ fun SwipeRefreshCompose(
             }
             RepositoriesLazyColumn(reposList = reposListStateValue)
         }
+        if (stateValue.sortedReposByName.isNotEmpty()){
+            val sortedListByNameStateValue by rememberSaveable { // to save state when configuration changed
+                mutableStateOf(stateValue.sortedReposByName)
+            }
+            RepositoriesLazyColumn(reposList = sortedListByNameStateValue)
+        }
+        if (stateValue.sortedReposByStars.isNotEmpty()){
+            val sortedListByStarsStateValue by rememberSaveable { // to save state when configuration changed
+                mutableStateOf(stateValue.sortedReposByStars)
+            }
+            RepositoriesLazyColumn(reposList = sortedListByStarsStateValue)
+        }
     }
 }
 

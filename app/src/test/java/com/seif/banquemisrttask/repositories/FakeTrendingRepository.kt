@@ -4,8 +4,8 @@ import com.seif.banquemisrttask.data.datasources.localdatasource.entities.Trendi
 import com.seif.banquemisrttask.data.datasources.remotedatasource.dto.TrendingRepositoriesItem
 import com.seif.banquemisrttask.domain.model.TrendingRepository
 import com.seif.banquemisrttask.domain.repository.Repository
-import com.seif.banquemisrttask.domain.toTrendingRepositoriesEntityList
-import com.seif.banquemisrttask.domain.toTrendingRepository
+import com.seif.banquemisrttask.data.toTrendingRepositoriesEntityList
+import com.seif.banquemisrttask.data.toTrendingRepository
 import com.seif.banquemisrttask.util.Constants
 import com.seif.banquemisrttask.util.NetworkResult
 import com.seif.banquemisrttask.util.networkBoundResource

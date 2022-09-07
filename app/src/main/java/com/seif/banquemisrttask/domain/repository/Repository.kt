@@ -10,7 +10,7 @@ interface   Repository {
     fun getTrendingRepositories(forceFetch:Boolean): Flow<NetworkResult<List<TrendingRepository>>>
 
     // local data source
-    fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepositoriesEntity>>
-    fun sortTrendingRepositoriesByName(): Flow<List<TrendingRepositoriesEntity>>
+    fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepository>>
+    fun sortTrendingRepositoriesByName(): Flow<List<TrendingRepository>>
 
     }

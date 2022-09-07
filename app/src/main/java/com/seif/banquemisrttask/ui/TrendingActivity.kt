@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.seif.banquemisrttask.R
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.databinding.TrendingMainBinding
+import com.seif.banquemisrttask.domain.model.TrendingRepository
 import com.seif.banquemisrttask.ui.adapters.TrendingRepositoriesAdapter
 import com.seif.banquemisrttask.util.NetworkResult
 import com.seif.banquemisrttask.ui.viewmodel.MainViewModel
@@ -24,7 +25,7 @@ class TrendingActivity : AppCompatActivity() {
 
     private val trendingAdapter: TrendingRepositoriesAdapter by lazy { TrendingRepositoriesAdapter() }
     private val mainViewModel: MainViewModel by viewModels()
-    private var trendingRepositoriesList: ArrayList<TrendingRepositoriesEntity>? = null
+    private var trendingRepositoriesList: ArrayList<TrendingRepository>? = null
     private var expandedSavedInstanceItemPosition: Int? = null
     private var isErrorState: Boolean = false
 
@@ -62,20 +63,19 @@ class TrendingActivity : AppCompatActivity() {
     }
 
     private fun handleConfigurationChanges(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            val trendingList =
-                savedInstanceState.getParcelableArrayList<TrendingRepositoriesEntity>("trendingList")
-            val expandedPosition = savedInstanceState.getInt("expandedPosition")
-            val isError = savedInstanceState.getBoolean("isErrorState")
-            Log.d("rotate", "savedInstance: $expandedPosition")
-            handleTrendingList(trendingList, expandedPosition, isError)
-        } else {
-            observeApiData()
-        }
+//        if (savedInstanceState != null) {
+//            val trendingList = savedInstanceState.getParcelableArrayList<TrendingRepository>("trendingList")
+//            val expandedPosition = savedInstanceState.getInt("expandedPosition")
+//            val isError = savedInstanceState.getBoolean("isErrorState")
+//            Log.d("rotate", "savedInstance: $expandedPosition")
+//            handleTrendingList(trendingList, expandedPosition, isError)
+//        } else {
+//            observeApiData()
+//        }
     }
 
     private fun handleTrendingList(
-        trendingList: ArrayList<TrendingRepositoriesEntity>?,
+        trendingList: ArrayList<TrendingRepository>?,
         expandedPosition: Int,
         isError: Boolean
     ) {
@@ -115,10 +115,10 @@ class TrendingActivity : AppCompatActivity() {
                 binding.constraintRetry.visibility = View.GONE
 
                 response.data?.let {
-                    trendingAdapter.addTrendingRepositoriesItem(it)
+                  //  trendingAdapter.addTrendingRepositoriesItem(it)
                     trendingAdapter.resetExpandingHandlers()
 
-                    trendingRepositoriesList = it.toCollection(ArrayList())
+                  //  trendingRepositoriesList = it.toCollection(ArrayList())
                     isErrorState = false
                     // binding.rvTrending.scrollToPosition(0)
                 }
@@ -139,9 +139,9 @@ class TrendingActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        trendingRepositoriesList?.let {
-            outState.putParcelableArrayList("trendingList", it)
-        }
+//        trendingRepositoriesList?.let {
+//            outState.putParcelableArrayList("trendingList", it)
+//        }
         expandedSavedInstanceItemPosition?.let {
             outState.putInt("expandedPosition", it)
         }

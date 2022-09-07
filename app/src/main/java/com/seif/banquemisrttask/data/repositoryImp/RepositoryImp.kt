@@ -4,13 +4,12 @@ package com.seif.banquemisrttask.data.repositoryImp
 import android.net.ConnectivityManager
 import android.util.Log
 import com.seif.banquemisrttask.data.datasources.localdatasource.LocalDataSource
-import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.data.datasources.remotedatasource.RemoteDataSource
 import com.seif.banquemisrttask.data.datasources.remotedatasource.dto.TrendingRepositoriesItem
 import com.seif.banquemisrttask.domain.model.TrendingRepository
 import com.seif.banquemisrttask.domain.repository.Repository
-import com.seif.banquemisrttask.domain.toTrendingRepositoriesEntityList
-import com.seif.banquemisrttask.domain.toTrendingRepository
+import com.seif.banquemisrttask.data.toTrendingRepositoriesEntityList
+import com.seif.banquemisrttask.data.toTrendingRepository
 import com.seif.banquemisrttask.util.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -56,11 +55,18 @@ class RepositoryImp @Inject constructor(
 
     }
 
-    override fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepositoriesEntity>> {
-        return localDataSource.sortTrendingRepositoriesByStars()
+    override fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepository>> {
+        return flow {
+            val sortedReposEntityByStars = localDataSource.sortTrendingRepositoriesByStars().first()
+            emit(sortedReposEntityByStars.toTrendingRepository())
+
+        }
     }
 
-    override fun sortTrendingRepositoriesByName(): Flow<List<TrendingRepositoriesEntity>> {
-        return localDataSource.sortTrendingRepositoriesByName()
+    override fun sortTrendingRepositoriesByName(): Flow<List<TrendingRepository>> {
+        return  flow {
+            val sortedReposEntityByName = localDataSource.sortTrendingRepositoriesByName().first()
+            emit(sortedReposEntityByName.toTrendingRepository())
+        }
     }
 }

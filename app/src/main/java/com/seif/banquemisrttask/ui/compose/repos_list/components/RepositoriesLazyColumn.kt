@@ -20,16 +20,7 @@ fun RepositoriesLazyColumn(
                 repositories = item,
                 index,
                 onItemClick = {
-                    if (homeViewModel.previousSelectedPosition == -1) {
-                        homeViewModel.previousSelectedPosition = it
-                        reposList[it].isExpanded.value = true
-                    } else if (it == homeViewModel.previousSelectedPosition) {
-                        reposList[it].isExpanded.value = !reposList[it].isExpanded.value
-                    } else { // not equal
-                        reposList[it].isExpanded.value = true
-                        reposList[homeViewModel.previousSelectedPosition].isExpanded.value = false
-                        homeViewModel.previousSelectedPosition = it
-                    }
+                    homeViewModel.handleExpandedState(reposList, it)
                 })
         }
     }

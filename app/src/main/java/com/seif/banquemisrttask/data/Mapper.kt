@@ -1,4 +1,4 @@
-package com.seif.banquemisrttask.domain
+package com.seif.banquemisrttask.data
 
 import androidx.compose.runtime.mutableStateOf
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
@@ -35,11 +35,11 @@ fun List<TrendingRepositoriesEntity>.toTrendingRepository(): List<TrendingReposi
             it.author ?: "Seif Mohamed",
             it.avatar?: "https://picsum.photos/seed/picsum/200/300",
             it.description?: "",
-            it.forks,
+            it.id,
             it.language?: "Kotlin",
             it.languageColor?: "#0000FF",
             it.name,
-            it.stars,
+            it.id,
             it.url,
             it.fetchTimeStamp,
             mutableStateOf(false)

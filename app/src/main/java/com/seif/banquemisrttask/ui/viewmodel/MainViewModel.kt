@@ -2,6 +2,7 @@ package com.seif.banquemisrttask.ui.viewmodel
 
 import androidx.lifecycle.*
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
+import com.seif.banquemisrttask.domain.model.TrendingRepository
 import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.domain.usecases.*
 import com.seif.banquemisrttask.util.NetworkResult
@@ -19,10 +20,10 @@ class MainViewModel @Inject constructor(
    //     getTrendingRepositoriesUseCase(false).asLiveData()
 
     /** Sorting **/
-    val sortReposByName: LiveData<List<TrendingRepositoriesEntity>> by lazy {
+    val sortReposByName: LiveData<List<TrendingRepository>> by lazy {
         repository.sortTrendingRepositoriesByName().asLiveData()
     }
-    val sortReposByStars: LiveData<List<TrendingRepositoriesEntity>> by lazy {
+    val sortReposByStars: LiveData<List<TrendingRepository>> by lazy {
         repository.sortTrendingRepositoriesByStars().asLiveData()
     }
 

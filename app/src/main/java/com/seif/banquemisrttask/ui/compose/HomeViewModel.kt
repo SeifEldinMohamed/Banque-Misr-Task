@@ -70,4 +70,19 @@ class HomeViewModel @Inject constructor(
             }.launchIn(viewModelScope)
         }
     }
+
+    fun handleExpandedState(reposList: List<TrendingRepository>, position:Int) {
+        if (previousSelectedPosition == -1) {
+            previousSelectedPosition = position
+            reposList[position].isExpanded.value = true
+        }
+        else if (position == previousSelectedPosition) {
+            reposList[position].isExpanded.value = !reposList[position].isExpanded.value
+        }
+        else { // not equal
+            reposList[position].isExpanded.value = true
+            reposList[previousSelectedPosition].isExpanded.value = false
+            previousSelectedPosition = position
+        }
+    }
 }
