@@ -8,10 +8,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.seif.banquemisrttask.ui.compose.HomeViewModel
-import com.seif.banquemisrttask.ui.compose.repos_list.components.OptionMenu
-import com.seif.banquemisrttask.ui.compose.repos_list.components.AnimatedShimmer
-import com.seif.banquemisrttask.ui.compose.repos_list.components.NoInternetConnectionSection
-import com.seif.banquemisrttask.ui.compose.repos_list.components.RepositoriesLazyColumn
+import com.seif.banquemisrttask.ui.compose.rememberWindowInfo
+import com.seif.banquemisrttask.ui.compose.WindowInfo
+import com.seif.banquemisrttask.ui.compose.repos_list.components.*
 
 @Composable
 fun ReposListScreen() {
@@ -40,8 +39,13 @@ fun SwipeRefreshCompose(
         onRefresh = { refreshing = true },
     ) {
         val stateValue = homeViewModel.state.value
+        val windowInfo = rememberWindowInfo()
         if (stateValue.error.isNotBlank()) {
-            NoInternetConnectionSection()
+            when(windowInfo.screenWidthInfo){
+                is WindowInfo.WindowType.Compact -> NoInternetConnectionSectionPortrait()
+                else -> NoInternetConnectionSectionLandscape()
+            }
+
         }
         if (stateValue.isLoading) {
             Log.d("trending", "loading...")

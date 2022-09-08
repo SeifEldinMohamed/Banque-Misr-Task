@@ -23,8 +23,8 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     var previousSelectedPosition = -1
 
-    private val _state = mutableStateOf(UiState())
-    val state: State<UiState> = _state
+    private val _state = mutableStateOf(RepoUiState())
+    val state: State<RepoUiState> = _state
 
     init {
         fetchingRepositories()
@@ -35,16 +35,16 @@ class HomeViewModel @Inject constructor(
             getTrendingRepositoriesUseCase(forceFetch).onEach { result: NetworkResult<List<TrendingRepository>> ->
                 when (result) {
                     is NetworkResult.Success -> {
-                        _state.value = UiState(repos = result.data ?: emptyList())
+                        _state.value = RepoUiState(repos = result.data ?: emptyList())
                     }
                     is NetworkResult.Error -> {
-                        _state.value = UiState(
+                        _state.value = RepoUiState(
                             error = result.message ?: "An unexpected error occured"
                         )
                     }
                     is NetworkResult.Loading -> {
                         Log.d("trending", "loading")
-                        _state.value = UiState(isLoading = true)
+                        _state.value = RepoUiState(isLoading = true)
                     }
                 }
             }.launchIn(viewModelScope)
@@ -58,7 +58,7 @@ class HomeViewModel @Inject constructor(
     fun sortReposByName(){
         viewModelScope.launch(Dispatchers.IO){
             repository.sortTrendingRepositoriesByName().onEach {
-                _state.value = UiState(sortedReposByName = it )
+                _state.value = RepoUiState(sortedReposByName = it )
             }.launchIn(viewModelScope)
         }
     }
@@ -66,7 +66,7 @@ class HomeViewModel @Inject constructor(
     fun sortReposBStars(){
         viewModelScope.launch(Dispatchers.IO){
             repository.sortTrendingRepositoriesByStars().onEach {
-                _state.value = UiState(sortedReposByStars = it )
+                _state.value = RepoUiState(sortedReposByStars = it )
             }.launchIn(viewModelScope)
         }
     }

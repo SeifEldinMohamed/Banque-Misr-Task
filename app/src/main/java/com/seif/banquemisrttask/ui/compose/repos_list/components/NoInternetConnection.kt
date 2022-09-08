@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,7 +21,7 @@ import com.seif.banquemisrttask.ui.compose.ui.theme.LightGreen
 import com.seif.banquemisrttask.ui.compose.ui.theme.LightWhite
 
 @Composable
-fun NoInternetConnectionSection(
+fun NoInternetConnectionSectionPortrait(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     Column(
@@ -66,5 +67,67 @@ fun NoInternetConnectionSection(
                 color = LightGreen
             )
         }
+    }
+}
+
+@Composable
+fun NoInternetConnectionSectionLandscape(
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(LightWhite)
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(start = 20.dp) ,
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = "Something Went Wrong..",
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.padding(bottom = 15.dp)
+            )
+
+            Text(
+                text = "An alien is probably blocking your signal",
+                style = MaterialTheme.typography.h5
+            )
+            Spacer(modifier = Modifier.height(55.dp))
+
+            OutlinedButton(
+                colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.Transparent),
+                border = BorderStroke(2.dp, LightGreen),
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
+                onClick = {
+                    homeViewModel.forceFetchingData()
+                }
+            ) {
+                Text(
+                    text = "Retry",
+                    fontSize = 18.sp,
+                    color = LightGreen
+                )
+            }
+        }
+        Image(
+            painter = painterResource(id = R.drawable.nointernet_connection),
+            contentDescription = "No internet connection image",
+            Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .height(250.dp),
+            contentScale = ContentScale.Fit
+        )
     }
 }
