@@ -34,10 +34,11 @@ fun RepoItemExpandable(
             onItemClick(itemPosition)
         }
         .padding(top = 12.dp)
+
     ) {
         Image(
             painter = rememberImagePainter(
-                data =  repositories.avatar,
+                data =  "",
                 builder = {
                   //  error(R.drawable.image_placeholder)
                     crossfade(1000)

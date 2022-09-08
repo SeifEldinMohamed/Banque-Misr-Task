@@ -3,6 +3,7 @@ package com.seif.banquemisrttask.ui.compose.repos_list
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -21,6 +22,7 @@ fun ReposListScreen() {
     }
 }
 
+
 @Composable
 fun SwipeRefreshCompose(
     homeViewModel: HomeViewModel = hiltViewModel()
@@ -29,7 +31,6 @@ fun SwipeRefreshCompose(
     LaunchedEffect(refreshing) {
         if (refreshing) { // do your work here
             homeViewModel.forceFetchingData()
-            //delay(1500)
             refreshing = false
         }
     }
@@ -56,19 +57,19 @@ fun SwipeRefreshCompose(
             }
         }
         if (stateValue.repos.isNotEmpty()) {
-            val reposListStateValue by rememberSaveable { // to save state when configuration changed
+            val reposListStateValue by remember { // to save state when configuration changed
                 mutableStateOf(stateValue.repos)
             }
             RepositoriesLazyColumn(reposList = reposListStateValue)
         }
         if (stateValue.sortedReposByName.isNotEmpty()){
-            val sortedListByNameStateValue by rememberSaveable { // to save state when configuration changed
+            val sortedListByNameStateValue by remember { // to save state when configuration changed
                 mutableStateOf(stateValue.sortedReposByName)
             }
             RepositoriesLazyColumn(reposList = sortedListByNameStateValue)
         }
         if (stateValue.sortedReposByStars.isNotEmpty()){
-            val sortedListByStarsStateValue by rememberSaveable { // to save state when configuration changed
+            val sortedListByStarsStateValue by remember { // to save state when configuration changed
                 mutableStateOf(stateValue.sortedReposByStars)
             }
             RepositoriesLazyColumn(reposList = sortedListByStarsStateValue)

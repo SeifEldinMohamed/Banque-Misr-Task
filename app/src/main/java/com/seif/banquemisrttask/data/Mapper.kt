@@ -33,7 +33,7 @@ fun List<TrendingRepositoriesEntity>.toTrendingRepository(): List<TrendingReposi
         TrendingRepository(
             it.id,
             it.author ?: "Seif Mohamed",
-            it.avatar?: "https://picsum.photos/seed/picsum/200/300",
+            it.avatar?: "",
             it.description?: "",
             it.id,
             it.language?: "Kotlin",
