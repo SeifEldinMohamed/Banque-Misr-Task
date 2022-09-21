@@ -4,7 +4,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.util.Log
-import javax.inject.Inject
 
 class CommonFunctions {
     companion object {

@@ -1,6 +1,5 @@
 package com.seif.banquemisrttask.domain.usecases
 
-import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.domain.model.TrendingRepository
 import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.util.NetworkResult

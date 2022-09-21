@@ -1,6 +1,5 @@
 package com.seif.banquemisrttask.ui.compose.repos_list.components
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -13,19 +12,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.seif.banquemisrttask.ui.compose.HomeViewModel
-import com.seif.banquemisrttask.ui.viewmodel.MainViewModel
 
 @Composable
 fun OptionMenu(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     var showMenu by rememberSaveable { mutableStateOf(false) }
-    val context = LocalContext.current
 
     TopAppBar(
         title = {
@@ -39,14 +35,13 @@ fun OptionMenu(
         },
         backgroundColor = Color.White,
         actions = {
-
             IconButton(onClick = { showMenu = !showMenu }) {
-                Icon(Icons.Default.MoreVert, "")
+                Icon(Icons.Default.MoreVert, "menu")
             }
 
             DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = { showMenu = false }
+                expanded = showMenu, // Whether the menu is currently open and visible to the user
+                onDismissRequest = { showMenu = false } // Called when the user requests to dismiss the menu, such as by tapping outside the menu's bounds
             ) {
                 DropdownMenuItem(onClick = {
                     if (homeViewModel.state.value.error.isBlank()) // when we are not in error state
