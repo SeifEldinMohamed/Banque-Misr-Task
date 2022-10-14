@@ -41,18 +41,18 @@ class FakeTrendingRepository(
         )
     }
 
-    override fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepositoriesEntity>> {
+    override fun sortTrendingRepositoriesByStars(): Flow<List<TrendingRepository>> {
         reposFromDataBase.sortBy {
             it.stars
         }
-        return flow { emit(reposFromDataBase) }
+        return flow { emit(reposFromDataBase.toTrendingRepository()) }
     }
 
-    override fun sortTrendingRepositoriesByName(): Flow<List<TrendingRepositoriesEntity>> {
+    override fun sortTrendingRepositoriesByName(): Flow<List<TrendingRepository>> {
         reposFromDataBase.sortBy {
             it.name
         }
-        return flow { emit(reposFromDataBase) }
+        return flow { emit(reposFromDataBase.toTrendingRepository()) }
     }
 
 }

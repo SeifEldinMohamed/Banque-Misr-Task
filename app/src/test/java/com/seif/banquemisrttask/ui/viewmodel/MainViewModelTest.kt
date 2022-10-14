@@ -1,6 +1,7 @@
 package com.seif.banquemisrttask.ui.viewmodel
 
 import com.google.common.truth.Truth.assertThat
+import com.seif.banquemisrttask.TestDispatchers
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
 import com.seif.banquemisrttask.domain.usecases.GetTrendingRepositoriesUseCase
 import com.seif.banquemisrttask.getOrAwaitValueTest
@@ -13,13 +14,19 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
+import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class MainViewModelTest {
     private lateinit var mainViewModel: MainViewModel
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Inject
+//    lateinit var test: TestDispatchers
+
     @Before
     fun setup(){
+
+      //  Dispatchers.setMain(test.io)
         Dispatchers.setMain(StandardTestDispatcher())
         mainViewModel = MainViewModel(GetTrendingRepositoriesUseCase(FakeTrendingRepository()),FakeTrendingRepository())
 
@@ -30,7 +37,6 @@ class MainViewModelTest {
         shouldHasInternetConnection = !value
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun getTrendingRepositoriesSafeCall_HasInternetConnection(){
         if(shouldHasInternetConnection){
             runTest {

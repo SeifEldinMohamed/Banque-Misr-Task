@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.domain.usecases.*
+import com.seif.banquemisrttask.ui.dispatcher.DispatcherProvider
+import com.seif.banquemisrttask.ui.dispatcher.StandardDispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +16,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideDispatcherProvider(): DispatcherProvider {
+        return StandardDispatcher()
+    }
 
     @Singleton
     @Provides
@@ -28,10 +36,11 @@ object AppModule {
     ): GetTrendingRepositoriesUseCase {
         return GetTrendingRepositoriesUseCase(repository)
     }
+
     @Singleton
     @Provides
-    fun checkInternetConnection (context: Context): ConnectivityManager {
-       return  context.getSystemService(
+    fun checkInternetConnection(context: Context): ConnectivityManager {
+        return context.getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
     }

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.seif.banquemisrttask.domain.model.TrendingRepository
 import com.seif.banquemisrttask.domain.repository.Repository
 import com.seif.banquemisrttask.domain.usecases.GetTrendingRepositoriesUseCase
+import com.seif.banquemisrttask.ui.dispatcher.DispatcherProvider
 import com.seif.banquemisrttask.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getTrendingRepositoriesUseCase: GetTrendingRepositoriesUseCase,
-    private val repository: Repository
+    private val repository: Repository,
+    private val dispatchers: DispatcherProvider
 ) : ViewModel() {
     var previousSelectedPosition = -1
 
@@ -31,7 +33,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun fetchingRepositories(forceFetch: Boolean = false) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             getTrendingRepositoriesUseCase(forceFetch).onEach { result: NetworkResult<List<TrendingRepository>> ->
                 when (result) {
                     is NetworkResult.Success -> {
@@ -56,7 +58,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun sortReposByName(){
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(dispatchers.io){
             repository.sortTrendingRepositoriesByName().onEach {
                 _state.value = RepoUiState(sortedReposByName = it )
             }.launchIn(viewModelScope)
@@ -64,7 +66,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun sortReposBStars(){
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(dispatchers.io){
             repository.sortTrendingRepositoriesByStars().onEach {
                 _state.value = RepoUiState(sortedReposByStars = it )
             }.launchIn(viewModelScope)

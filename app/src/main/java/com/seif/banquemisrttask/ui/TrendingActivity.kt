@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seif.banquemisrttask.R
 import com.seif.banquemisrttask.data.datasources.localdatasource.entities.TrendingRepositoriesEntity
@@ -17,6 +18,7 @@ import com.seif.banquemisrttask.util.NetworkResult
 import com.seif.banquemisrttask.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TrendingActivity : AppCompatActivity() {
